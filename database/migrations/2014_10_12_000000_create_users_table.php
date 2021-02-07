@@ -15,6 +15,7 @@ class CreateUsersTable extends Migration
     {
         Schema::create('users', function (Blueprint $table) {
             $table->bigIncrements('id');
+            $table->string('firebase_uid', 255)->unique();
             $table->string('name');
             $table->string('email')->unique();
             $table->string('icon_url');
