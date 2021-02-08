@@ -3,7 +3,6 @@
 namespace App\Providers;
 
 use Illuminate\Support\ServiceProvider;
-use Kreait\Firebase\ServiceAccount;
 use Kreait\Firebase\Factory;
 
 class FirebaseServiceProvider extends ServiceProvider
@@ -15,18 +14,18 @@ class FirebaseServiceProvider extends ServiceProvider
      */
     public function register()
     {
-        $this->app->singleton(\Kreait\Firebase::class, function () {
-            return (new Factory())->withServiceAccount('firebase-adminsdk');
+        $this->app->singleton(\Kreait\Firebase\Auth::class, function () {
+            return (new Factory())->withServiceAccount(base_path('path/to/firebase-adminsdk.json'))->createAuth();
         });
     }
 
     /**
-     * Bootstrap services.
+     * 
      *
      * @return array
      */
     public function provides()
     {
-        return [\Kreait\Firebase::class];
+        return [\Kreait\Firebase\Auth::class];
     }
 }

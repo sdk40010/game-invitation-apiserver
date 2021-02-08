@@ -19,8 +19,10 @@ class CreateUsersTable extends Migration
             $table->string('name');
             $table->string('email')->unique();
             $table->string('icon_url');
-            $table->boolean('isAdmin');
+            $table->boolean('isAdmin')->default(false);
             $table->timestamps();
+
+            $table->index('firebase_uid');
         });
     }
 

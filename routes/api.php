@@ -14,6 +14,6 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::middleware('auth:api')->prefix('v1')->group(function () {
-    Route::prefix('auth')->get('/', 'AuthController');
+Route::prefix('v1')->group(function () {
+    Route::post('/auth', 'Auth\AuthController');
 });
