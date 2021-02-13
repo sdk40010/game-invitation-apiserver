@@ -3,36 +3,32 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
-use Firebase\Auth\Token\Exception\InvalidToken;
 use Illuminate\Http\Request;
-use Illuminate\Http\JsonResponse;
-use InvalidArgumentException;
-use Kreait\Firebase\Auth;
-use App\Models\User;
 
-class AuthController extends Controller
+use Kreait\Firebase\Auth as FirebaseAuth;
+use Firebase\Auth\Token\Exception\InvalidToken;
+use InvalidArgumentException;
+
+use App\Models\User;
+use Illuminate\Support\Facades\Auth;
+
+class LoginController extends Controller
 {
     /**
-     * @var Auth
+     * @var Firebase
      */
-    private $auth;
+    private $fAuth;
 
-    public function __construct(Auth $auth)
+    public function __construct(FirebaseAuth $fAuth)
     {
-        $this->auth = $auth;
+        $this->fAuth = $fAuth;
     }
 
-    /**
-     * firebaseのIDトークンを検証する
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\JsonResponse
-     */
-    public function __invoke(Request $request)
+    public function login(Request $request)
     {
         $idToken = $request->input('idToken');
         try {
-            $verifiedIdToken = $this->auth->verifyIdToken($idToken);
+            $verifiedIdToken = $this->fAuth->verifyIdToken($idToken);
         } catch (InvalidToken $e) {
             return response()->json(['message' => 'The token is invalid'], 400);
         }
@@ -41,7 +37,7 @@ class AuthController extends Controller
         }
 
         $firebaseUid = $verifiedIdToken->claims()->get('sub');
-        $firebaseUser = $this->auth->getUser($firebaseUid);
+        $firebaseUser = $this->fAuth->getUser($firebaseUid);
         $user = User::firstOrCreate(
             ['firebase_uid' => $firebaseUid],
             [
@@ -52,9 +48,16 @@ class AuthController extends Controller
         );
 
         if ($user) {
+            Auth::login($user);
             return response()->json(['message' => "logged in"]);
         } else {
             return response()->json(['message' => "The user was not found"], 400);
         }
+
+    }
+
+    public function logout(Request $request) {
+        Auth::logout();
+        return response()->json(['message' => "logged out"]);
     }
 }

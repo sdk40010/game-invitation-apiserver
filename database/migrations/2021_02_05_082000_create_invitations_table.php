@@ -18,9 +18,8 @@ class CreateInvitationsTable extends Migration
             $table->unsignedBigInteger('user_id');
             $table->string('title', 255);
             $table->string('description')->nullable();
-            $table->date('date');
-            $table->time('start_time');
-            $table->time('end_time');
+            $table->dateTime('start_time');
+            $table->dateTime('end_time');
             $table->unsignedTinyInteger('capacity');
             $table->string('img_url')->nullable();
             $table->boolean('is_private')->default(false);

@@ -15,5 +15,10 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::prefix('v1')->group(function () {
-    Route::post('/auth', 'Auth\AuthController');
+    Route::post('/login', 'Auth\LoginController@login');
+    Route::post('/logout', 'Auth\LoginController@logout');
+
+    Route::middleware('auth')->prefix('invitations')->group(function () {
+        Route::post('/', 'InvitationController@create');
+    });
 });

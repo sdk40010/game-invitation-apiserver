@@ -15,7 +15,7 @@ class FirebaseServiceProvider extends ServiceProvider
     public function register()
     {
         $this->app->singleton(\Kreait\Firebase\Auth::class, function () {
-            return (new Factory())->withServiceAccount(base_path('path/to/firebase-adminsdk.json'))->createAuth();
+            return (new Factory())->withServiceAccount(base_path('storage/firebase-adminsdk.json'))->createAuth();
         });
     }
 

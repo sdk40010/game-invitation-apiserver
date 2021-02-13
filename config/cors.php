@@ -31,7 +31,7 @@ return [
     /*
      * Matches the request origin. `['*']` allows all origins. Wildcards can be used, eg `*.mydomain.com`
      */
-    'allowed_origins' => env('APP_ENV', 'production') === 'production' ? [env('APP_FRONT_URL')] : ['*'],
+    'allowed_origins' => env('APP_ENV', 'production') === 'production' ? [env('FRONT_END_URL')] : ['*'],
 
     /*
      * Patterns that can be used with `preg_match` to match the origin.
@@ -56,5 +56,5 @@ return [
     /*
      * Sets the Access-Control-Allow-Credentials header.
      */
-    'supports_credentials' => false,
+    'supports_credentials' => true,
 ];
