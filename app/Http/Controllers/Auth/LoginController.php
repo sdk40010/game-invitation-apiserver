@@ -15,7 +15,7 @@ use Illuminate\Support\Facades\Auth;
 class LoginController extends Controller
 {
     /**
-     * @var Firebase
+     * @var FirebaseAuth
      */
     private $fAuth;
 
@@ -24,6 +24,9 @@ class LoginController extends Controller
         $this->fAuth = $fAuth;
     }
 
+    /**
+     * ユーザー登録とログイン処理
+     */
     public function login(Request $request)
     {
         $idToken = $request->input('idToken');
@@ -56,8 +59,21 @@ class LoginController extends Controller
 
     }
 
+    /**
+     * ログアウト処理
+     */
     public function logout(Request $request) {
         Auth::logout();
         return response()->json(['message' => "logged out"]);
+    }
+
+    /**
+     * ログインしているかどうかを返す
+     */
+    public function check(Request $request) {
+        $config = config('session');
+        $sessionCookie = $request->cookie(config('cookie'));
+        $isLoggedIn = $sessionCookie ? true : false;
+        return response()->json(['isLoggedIn' => $isLoggedIn]);
     }
 }

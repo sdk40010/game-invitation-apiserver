@@ -2,14 +2,23 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Model;
+use App\Models\UUIDModel;
 
-class Invitation extends Model
+class Invitation extends UUIDModel
 {
     protected $casts = [
-        'date' => 'datetime',
         'start_time' => 'datetime',
         'end_time' => 'datetime'
+    ];
+
+    protected $fillable = [
+        'use_id',
+        'title',
+        'description',
+        'start_time',
+        'end_time',
+        'capacity',
+        'img_url'
     ];
     
     public function user()

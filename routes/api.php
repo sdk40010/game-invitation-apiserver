@@ -17,8 +17,10 @@ use Illuminate\Support\Facades\Route;
 Route::prefix('v1')->group(function () {
     Route::post('/login', 'Auth\LoginController@login');
     Route::post('/logout', 'Auth\LoginController@logout');
+    Route::get('/login/check', 'Auth\LoginController@check');
 
-    Route::middleware('auth')->prefix('invitations')->group(function () {
-        Route::post('/', 'InvitationController@create');
-    });
+    Route::middleware(['auth', 'camelToSnake', 'snakeToCamel'])
+        ->prefix('invitations')->group(function () {
+            Route::post('/', 'InvitationController@store');
+        });
 });
