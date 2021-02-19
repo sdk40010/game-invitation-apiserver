@@ -29,7 +29,7 @@ class LoginController extends Controller
      */
     public function login(Request $request)
     {
-        $idToken = $request->input('idToken');
+        $idToken = $request->input('id_token');
         try {
             $verifiedIdToken = $this->fAuth->verifyIdToken($idToken);
         } catch (InvalidToken $e) {
@@ -52,7 +52,7 @@ class LoginController extends Controller
 
         if ($user) {
             Auth::login($user);
-            return response()->json(['message' => "logged in"]);
+            return response()->json(['user' => Auth::user()]);
         } else {
             return response()->json(['message' => "The user was not found"], 400);
         }
@@ -64,17 +64,14 @@ class LoginController extends Controller
      */
     public function logout(Request $request) {
         Auth::logout();
-        return response()->json(['message' => "logged out"]);
+        return response()->json(['message' => "Logged out"]);
     }
 
     /**
      * ログインしているかどうかを返す
      */
     public function check(Request $request) {
-        // $config = config('session');
-        // $sessionCookie = $request->cookie($config['cookie']);
-        // $isLoggedIn = $sessionCookie ? true : false;
-        $isLoggedIn = Auth::user() ? true : false;
-        return response()->json(['isLoggedIn' => $isLoggedIn]);
+        $data = Auth::user() ? ["user" => Auth::user()] : ["message" => "Not logged in"];
+        return response()->json($data);
     }
 }
