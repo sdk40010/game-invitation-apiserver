@@ -45,4 +45,17 @@ class InvitationController extends Controller
             abort(403);
         }
     }
+
+    /**
+     * 募集を削除する
+     */
+    public function delete(Invitation $invitation)
+    {
+        if (Auth::user()->can('delete', $invitation)) {
+            $invitation->delete();
+            return response()->json(['message' => '募集が削除されました。']);
+        } else {
+            abort(403);
+        }
+    }
 }

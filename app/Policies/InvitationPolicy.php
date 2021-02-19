@@ -27,4 +27,12 @@ class InvitationPolicy
     {
         return $user->id === $invitation->user_id;
     }
+
+    /**
+     * ユーザーが指定された募集を削除可能かどうか判定する
+     */
+    public function delete(User $user, Invitation $invitation)
+    {
+        return $user->id === $invitation->user_id;
+    }
 }
