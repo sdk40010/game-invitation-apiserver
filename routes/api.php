@@ -23,5 +23,6 @@ Route::middleware(['camelToSnake', 'snakeToCamel'])->prefix('v1')->group(functio
         ->prefix('invitations')->group(function () {
             Route::get('/{invitation}', 'InvitationController@show');
             Route::post('/', 'InvitationController@store');
+            Route::put('/{invitation}', 'InvitationController@update');
         });
 });

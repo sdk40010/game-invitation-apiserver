@@ -33,10 +33,10 @@ class LoginController extends Controller
         try {
             $verifiedIdToken = $this->fAuth->verifyIdToken($idToken);
         } catch (InvalidToken $e) {
-            return response()->json(['message' => 'The token is invalid'], 400);
+            abort(400, 'The token is invalid');
         }
         catch (InvalidArgumentException $e) {
-            return response()->json(['message' => 'The token could not be parsed'], 400);
+            abort(400, 'The token could not be parsed');
         }
 
         $firebaseUid = $verifiedIdToken->claims()->get('sub');
