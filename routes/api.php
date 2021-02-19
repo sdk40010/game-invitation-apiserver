@@ -21,6 +21,7 @@ Route::prefix('v1')->group(function () {
 
     Route::middleware(['auth', 'camelToSnake', 'snakeToCamel'])
         ->prefix('invitations')->group(function () {
+            Route::get('/{invitation}', 'InvitationController@show');
             Route::post('/', 'InvitationController@store');
         });
 });

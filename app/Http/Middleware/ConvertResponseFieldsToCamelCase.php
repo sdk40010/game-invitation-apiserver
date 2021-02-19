@@ -21,17 +21,28 @@ class ConvertResponseFieldsToCamelCase
         $response = $next($request);
         $content = $response->getContent();
 
-        try {
-            $json = json_decode($content, true);
-            $replaced = [];
-            foreach ($json as $key => $value) {
-                $replaced[Str::camel($key)] = $value;
-            }
-            $response->setContent(json_encode($replaced));
-        } catch (Exception $e) {
-            Log::debug($e);
-        }
-
+        $decoded = json_decode($content, true);
+        $result = $this->arrayToCamel($decoded);
+        
+        $response->setContent(json_encode($result));
         return $response;
+    }
+
+    /**
+     * 配列のキー名をキャメルケースに変換する
+     * 多次元配列にも対応可能
+     */
+    private function arrayToCamel($array)
+    {
+        $converted = [];
+
+        foreach ($array as $key => $value) {
+            if (is_array($value)) {
+                $converted[Str::camel($key)] = $this->arrayToCamel($value);    
+            } else {
+                $converted[Str::camel($key)] = $value;
+            }
+        }
+        return $converted;
     }
 }

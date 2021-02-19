@@ -71,9 +71,10 @@ class LoginController extends Controller
      * ログインしているかどうかを返す
      */
     public function check(Request $request) {
-        $config = config('session');
-        $sessionCookie = $request->cookie(config('cookie'));
-        $isLoggedIn = $sessionCookie ? true : false;
+        // $config = config('session');
+        // $sessionCookie = $request->cookie($config['cookie']);
+        // $isLoggedIn = $sessionCookie ? true : false;
+        $isLoggedIn = Auth::user() ? true : false;
         return response()->json(['isLoggedIn' => $isLoggedIn]);
     }
 }

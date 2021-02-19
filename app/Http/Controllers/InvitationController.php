@@ -5,7 +5,6 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Http\Requests\Invitation\StoreRequest;
 use App\Models\Invitation;
-use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 
@@ -24,8 +23,9 @@ class InvitationController extends Controller
         ]);
     }
 
-    public function show()
+    public function show(Invitation $invitation)
     {
-        return response()->json(['message' => 'invitation showed']);
+        $invitation->load('user');
+        return response()->json($invitation);
     }
 }
