@@ -2,6 +2,7 @@
 
 use App\Models\Invitation;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\DB;
 
 class InvitationTableSeeder extends Seeder
 {
@@ -12,22 +13,9 @@ class InvitationTableSeeder extends Seeder
      */
     public function run()
     {
-        $dataSet = [
-            [
-                'uuid' => 'd345b38e-5763-ef02-e8cb-2d235561257f',
-                'user_id' => 1,
-                'title' => '募集1',
-                'description' => '',
-                'date' => '2020-01-01',
-                'start_time'=> '20:00',
-                'end_time' => '22:00',
-                'capacity' => 3,
-                'img_url' => '',
-            ]
-        ];
-
-        foreach ($dataSet as $data) {
-            Invitation::create($data);
-        }
+        DB::statement('SET FOREIGN_KEY_CHECKS=0;');
+        Invitation::truncate();
+        DB::statement('SET FOREIGN_KEY_CHECKS=1;');
+        factory(Invitation::class, 100)->create();
     }
 }

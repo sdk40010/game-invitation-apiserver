@@ -21,17 +21,9 @@ class InvitationPolicy
     }
 
     /**
-     * ユーザーが指定された募集を更新可能かどうか判定する
+     * ユーザーが指定された募集を更新もしくは削除可能かどうか判定する
      */
-    public function update(User $user, Invitation $invitation)
-    {
-        return $user->id === $invitation->user_id;
-    }
-
-    /**
-     * ユーザーが指定された募集を削除可能かどうか判定する
-     */
-    public function delete(User $user, Invitation $invitation)
+    public function updateOrDelete(User $user, Invitation $invitation)
     {
         return $user->id === $invitation->user_id;
     }
