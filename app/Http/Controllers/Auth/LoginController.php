@@ -4,8 +4,8 @@ namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use App\Http\Requests\Auth\LoginRequest;
 
-use Kreait\Firebase\Auth as FirebaseAuth;
 use Firebase\Auth\Token\Exception\InvalidToken;
 use InvalidArgumentException;
 
@@ -15,46 +15,32 @@ use Illuminate\Support\Facades\Auth;
 class LoginController extends Controller
 {
     /**
-     * @var FirebaseAuth
-     */
-    private $fAuth;
-
-    public function __construct(FirebaseAuth $fAuth)
-    {
-        $this->fAuth = $fAuth;
-    }
-
-    /**
      * ユーザー登録とログイン処理
      */
-    public function login(Request $request)
+    public function login(LoginRequest $request)
     {
-        $idToken = $request->input('id_token');
+        // クライアントから送られてきたIDトークンの解析
         try {
-            $verifiedIdToken = $this->fAuth->verifyIdToken($idToken);
+            $verifiedIdToken = $request->getVerifiedIdToken();
         } catch (InvalidToken $e) {
-            abort(400, 'The token is invalid');
+            abort(400, '無効なトークンです。');
         }
         catch (InvalidArgumentException $e) {
-            abort(400, 'The token could not be parsed');
+            abort(400, 'トークンを解析できませんでした。');
         }
 
+        // ユーザー登録
         $firebaseUid = $verifiedIdToken->claims()->get('sub');
-        $firebaseUser = $this->fAuth->getUser($firebaseUid);
         $user = User::firstOrCreate(
             ['firebase_uid' => $firebaseUid],
-            [
-                'name' => $firebaseUser->displayName,
-                'email' => $firebaseUser->email,
-                'icon_url' => $firebaseUser->photoUrl,
-            ]
+            $request->getUserData($firebaseUid)
         );
 
         if ($user) {
             Auth::login($user);
             return response()->json(['user' => Auth::user()]);
         } else {
-            return response()->json(['message' => "The user was not found"], 400);
+            return abort(401, 'ユーザーアカウントを取得できませんでした。');
         }
 
     }
@@ -64,14 +50,14 @@ class LoginController extends Controller
      */
     public function logout(Request $request) {
         Auth::logout();
-        return response()->json(['message' => "Logged out"]);
+        return response()->json(['message' => "ログアウトしました。"]);
     }
 
     /**
-     * ログインしているかどうかを返す
+     * ログインしているかどうか判定する
      */
     public function check(Request $request) {
-        $data = Auth::user() ? ["user" => Auth::user()] : ["message" => "Not logged in"];
+        $data = Auth::user() ? ["user" => Auth::user()] : ["message" => "ログインしていません。"];
         return response()->json($data);
     }
 }
