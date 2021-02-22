@@ -18,7 +18,7 @@ class InvitationCollection extends ResourceCollection
     }
 
     /**
-     * データラッパー用のキー名
+     * データラッパーのキー名
      */
     public static $wrap = 'invitations';
 }

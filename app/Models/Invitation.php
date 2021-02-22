@@ -21,18 +21,27 @@ class Invitation extends UUIDModel
         'img_url'
     ];
     
+    /**
+     * 募集の作成者
+     */
     public function user()
     {
         return $this->belongsTo(User::class);
     }
 
-    public function participatingUsers()
+    /**
+     * 募集の参加者一覧
+     */
+    public function participants()
     {
         return $this->belongsToMany(User::class, 'participations');
     }
 
+    /**
+     * 募集に付けられたタグ一覧
+     */
     public function tags()
     {
-        return $this->belongsTo(Tag::class, 'tagmaps');
+        return $this->belongsToMany(Tag::class, 'tagmaps');
     }
 }
