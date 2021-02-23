@@ -3,12 +3,8 @@
 namespace App\Http\Requests\Invitation;
 
 use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Support\Facades\Log;
 
-/**
- * 募集の追加・更新用のリクエスト
- */
-class UpsertRequest extends FormRequest
+class UpdateRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -32,33 +28,31 @@ class UpsertRequest extends FormRequest
             'description' => '',
             'start_time' => 'required|before:end_time',
             'end_time' => 'required|after:start_time',
-            'capacity' => 'required|min:1|max:10',
+            'capacity' => 'required|min:1|max:10', // capacityの最小値は参加者の数で決まる
             'tags' => 'array|max:10',
+            'tags_before_edit' => 'array|max:10'
         ];
     }
 
     /**
-     * バリデーション済みの募集データを取得する
-     * 
-     * @return array
-     */
-    public function getInvitationData()
-    {
-        $validated = $this->validator->validated();
-        unset($validated['tags']);
-        return $validated;
-    }
-
-    /**
      * 既存のタグと新しいタグで分類されたタグデータを取得する
+     * タグデータは更新が必要なタグだけを含んでいる
      * 
      * @return array
      */
-    public function getTagsData() {
+    public function getTagsData()
+    {
         $existing = [];
         $new = [];
 
-        foreach ($this->validated()['tags'] as $tag) {
+        $shouldUpdateTags = array_filter(
+            $this->validated()['tags'], 
+            function ($value) {
+                return !in_array($value, $this->validated()['tags_before_edit']);
+            }
+        );
+        
+        foreach ($shouldUpdateTags as $tag) {
             if (array_key_exists('id', $tag)) {
                 $tag['count'] += 1;
                 $existing[] = $tag;
@@ -71,6 +65,20 @@ class UpsertRequest extends FormRequest
             'existing' => $existing,
             'new' => $new
         ];
+    }
 
+    /**
+     * タグ付を解除する必要のあるタグ一覧を取得する
+     * 
+     * @return array
+     */
+    public function getShouldDetachTags()
+    {
+        return array_filter(
+            $this->validated()['tags_before_edit'],
+            function ($value) {
+                return !in_array($value, $this->validated()['tags']);
+            }
+        );
     }
 }

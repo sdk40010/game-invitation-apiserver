@@ -34,7 +34,8 @@ class Invitation extends UUIDModel
      */
     public function participants()
     {
-        return $this->belongsToMany(User::class, 'participations');
+        return $this->belongsToMany(User::class, 'participations')
+            ->withTimestamps();
     }
 
     /**
@@ -42,6 +43,7 @@ class Invitation extends UUIDModel
      */
     public function tags()
     {
-        return $this->belongsToMany(Tag::class, 'tagmaps');
+        return $this->belongsToMany(Tag::class, 'tagmaps')
+            ->withTimestamps();
     }
 }

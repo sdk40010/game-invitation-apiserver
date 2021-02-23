@@ -16,6 +16,6 @@ class TagTableSeeder extends Seeder
         DB::statement('SET FOREIGN_KEY_CHECKS=0;');
         Tag::truncate();
         DB::statement('SET FOREIGN_KEY_CHECKS=1;');
-        factory(Tag::class, 100)->create();
+        factory(Tag::class, 10)->create();
     }
 }

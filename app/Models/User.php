@@ -55,6 +55,7 @@ class User extends Authenticatable
 
     public function friends()
     {
-        return $this->belongsToMany(User::class, 'friendships');
+        return $this->belongsToMany(User::class, 'friendships')
+            ->withTimestamps();
     }
 }

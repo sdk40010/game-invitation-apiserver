@@ -4,7 +4,8 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Http\Requests\Invitation\IndexRequest;
-use App\Http\Requests\Invitation\UpsertRequest;
+use App\Http\Requests\Invitation\StoreRequest;
+use App\Http\Requests\Invitation\UpdateRequest;
 
 use App\Models\Invitation;
 use App\Http\Resources\InvitationCollection;
@@ -41,25 +42,14 @@ class InvitationController extends Controller
     /**
      * 募集を保存する
      */
-    public function store(UpsertRequest $request)
+    public function store(StoreRequest $request)
     {
-        $invitationData = $request->getInvitationData();
-
         // 募集の保存
-        $invitation = new Invitation($invitationData);
+        $invitation = new Invitation($request->validated());
         $invitation->user()->associate(Auth::user())->save();
 
-        // タグ、タグマップへの保存
-        $tagsData = $request->getTagsData();
-        foreach ($tagsData['existing'] as $tagData) {
-            $tag = Tag::find($tagData['id']);
-            $tag->fill($tagData)->save();
-            $invitation->tags()->attach($tag->id);
-        }
-        foreach ($tagsData['new'] as $tagData) {
-            $tag = Tag::create($tagData);
-            $invitation->tags()->attach($tag->id);
-        }
+        // タグとタグマップへの保存
+        $this->upsertTags($request->getTagsData(), $invitation);
 
         return response()->json(['redirectTo' => '/invitations'.'/'.$invitation->id]);
     }
@@ -67,11 +57,19 @@ class InvitationController extends Controller
     /**
      * 募集を更新する
      */
-    public function update(UpsertRequest $request, Invitation $invitation)
+    public function update(UpdateRequest $request, Invitation $invitation)
     {
         if (Auth::user()->can('updateOrDelete', $invitation)) {
-            $invitation->fill($request->all());
+            // 募集の更新
+            $invitation->fill($request->validated());
             $invitation->save();
+
+            //タグとタグマップの更新
+            $this->upsertTags($request->getTagsData(), $invitation);
+            foreach ($request->getShouldDetachTags() as $tag) {
+                $invitation->tags()->detach($tag['id']);
+            }
+
             return response()->json(['message' => '募集が更新されました。']);
         } else {
             abort(403);
@@ -88,6 +86,24 @@ class InvitationController extends Controller
             return response()->json(['message' => '募集が削除されました。']);
         } else {
             abort(403);
+        }
+    }
+
+    /**
+     * タグとタグマップへの追加・更新を行う
+     * 
+     * @param $tagsData - 既存のタグと新しいタグで分類されたタグデータ
+     * @param $invitation - タグ付け対象の募集
+     */
+    private function upsertTags($tagsData, $invitation) {
+        foreach ($tagsData['existing'] as $tagData) {
+            $tag = Tag::find($tagData['id']);
+            $tag->fill($tagData)->save();
+            $invitation->tags()->attach($tag->id);
+        }
+        foreach ($tagsData['new'] as $tagData) {
+            $tag = Tag::create($tagData);
+            $invitation->tags()->attach($tag->id);
         }
     }
 }

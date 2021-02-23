@@ -13,6 +13,7 @@ class Tag extends Model
 
     public function invitations()
     {
-        return $this->belongsToMany(Invitation::class, 'tagmaps');
+        return $this->belongsToMany(Invitation::class, 'tagmaps')
+            ->withTimestamps();
     }
 }

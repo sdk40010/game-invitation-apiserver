@@ -25,19 +25,14 @@ Route::middleware(['camelToSnake', 'snakeToCamel'])->prefix('v1')->group(functio
     });
 
     // 認証が必要なルート
-    // Route::middleware('auth')->prefix('invitations')
-    //     ->group(function () {
-    //         Route::get('/{invitation}', 'InvitationController@show');
-    //         Route::post('/', 'InvitationController@store');
-    //         Route::put('/{invitation}', 'InvitationController@update');
-    //         Route::delete('/{invitation}', 'InvitationController@delete');
-    //     });
     Route::middleware('auth')->group(function () {
         Route::prefix('invitations')->group(function () {
             Route::get('/{invitation}', 'InvitationController@show');
             Route::post('/', 'InvitationController@store');
             Route::put('/{invitation}', 'InvitationController@update');
             Route::delete('/{invitation}', 'InvitationController@delete');
+
+            Route::get('/{invitation}/tags', 'TagmapController@showTags');
         });
 
         Route::prefix('tags')->group(function () {
