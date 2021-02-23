@@ -21,7 +21,7 @@ class InvitationPolicy
     }
 
     /**
-     * ユーザーが指定された募集を更新もしくは削除可能かどうか判定する
+     * ユーザーが指定された募集を更新・削除可能かどうか判定する
      */
     public function updateOrDelete(User $user, Invitation $invitation)
     {

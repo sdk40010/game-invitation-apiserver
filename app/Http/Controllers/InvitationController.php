@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Http\Requests\Invitation\IndexRequest;
 use App\Http\Requests\Invitation\StoreRequest;
 use App\Http\Requests\Invitation\UpdateRequest;
+use App\Http\Requests\Invitation\DeleteRequest;
 
 use App\Models\Invitation;
 use App\Http\Resources\InvitationCollection;
@@ -59,34 +60,26 @@ class InvitationController extends Controller
      */
     public function update(UpdateRequest $request, Invitation $invitation)
     {
-        if (Auth::user()->can('updateOrDelete', $invitation)) {
-            // 募集の更新
-            $invitation->fill($request->validated());
-            $invitation->save();
+        // 募集の更新
+        $invitation->fill($request->validated());
+        $invitation->save();
 
-            //タグとタグマップの更新
-            $this->upsertTags($request->getTagsData(), $invitation);
-            foreach ($request->getShouldDetachTags() as $tag) {
-                $invitation->tags()->detach($tag['id']);
-            }
-
-            return response()->json(['message' => '募集が更新されました。']);
-        } else {
-            abort(403);
+        //タグとタグマップの更新
+        $this->upsertTags($request->getTagsData(), $invitation);
+        foreach ($request->getShouldDetachTags() as $tag) {
+            $invitation->tags()->detach($tag['id']);
         }
+
+        return response()->json(['message' => '募集が更新されました。']);
     }
 
     /**
      * 募集を削除する
      */
-    public function delete(Invitation $invitation)
+    public function delete(DeleteRequest $request, Invitation $invitation)
     {
-        if (Auth::user()->can('updateOrDelete', $invitation)) {
-            $invitation->delete();
-            return response()->json(['message' => '募集が削除されました。']);
-        } else {
-            abort(403);
-        }
+        $invitation->delete();
+        return response()->json(['message' => '募集が削除されました。']);
     }
 
     /**
