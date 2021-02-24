@@ -23,7 +23,7 @@ class InvitationController extends Controller
      */
     public function index(IndexRequest $request)
     {
-        $invitations = Invitation::with('user')
+        $invitations = Invitation::with(['user', 'tags'])
             ->where($request->getWhereClause())
             ->orderBy(...$request->getOrderByClause())
             ->paginate(30);
@@ -36,7 +36,7 @@ class InvitationController extends Controller
      */
     public function show(Invitation $invitation)
     {
-        $invitation->load('user');
+        $invitation->load(['user', 'tags']);
         return response()->json($invitation);
     }
 
@@ -66,7 +66,7 @@ class InvitationController extends Controller
 
         //タグとタグマップの更新
         $this->upsertTags($request->getTagsData(), $invitation);
-        foreach ($request->getShouldDetachTags() as $tag) {
+        foreach ($request->getTagsDataShouldDetached() as $tag) {
             $invitation->tags()->detach($tag['id']);
         }
 

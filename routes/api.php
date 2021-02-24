@@ -31,8 +31,6 @@ Route::middleware(['camelToSnake', 'snakeToCamel'])->prefix('v1')->group(functio
             Route::post('/', 'InvitationController@store');
             Route::put('/{invitation}', 'InvitationController@update');
             Route::delete('/{invitation}', 'InvitationController@delete');
-
-            Route::get('/{invitation}/tags', 'TagmapController@showTags');
         });
 
         Route::prefix('tags')->group(function () {

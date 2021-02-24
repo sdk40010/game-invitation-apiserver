@@ -3,7 +3,6 @@
 namespace App\Http\Requests\Invitation;
 
 use Illuminate\Foundation\Http\FormRequest;
-use App\Models\Invitation;
 
 class DeleteRequest extends FormRequest
 {
@@ -14,8 +13,8 @@ class DeleteRequest extends FormRequest
      */
     public function authorize()
     {
-        $invitation = Invitation::find($this->route('invitation'));
-        return $invitation && $this->user()->can('updateOrDelete');
+        $invitation = $this->route('invitation');
+        return $invitation && $this->user()->can('updateOrDelete', $invitation);
     }
 
     /**

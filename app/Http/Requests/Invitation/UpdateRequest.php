@@ -3,7 +3,6 @@
 namespace App\Http\Requests\Invitation;
 
 use Illuminate\Foundation\Http\FormRequest;
-use App\Models\Invitation;
 
 class UpdateRequest extends FormRequest
 {
@@ -14,8 +13,8 @@ class UpdateRequest extends FormRequest
      */
     public function authorize()
     {
-        $invitation = Invitation::find($this->route('invitation'));
-        return $invitation && $this->user()->can('updateOrDelete');
+        $invitation = $this->route('invitation');
+        return $invitation && $this->user()->can('updateOrDelete', $invitation);
     }
 
     /**
@@ -37,8 +36,8 @@ class UpdateRequest extends FormRequest
     }
 
     /**
-     * 既存のタグと新しいタグで分類されたタグデータを取得する
-     * タグデータは更新が必要なタグだけを含んでいる
+     * 既存のタグと新しいタグで分類されたタグ一覧を取得する
+     * タグ一覧は更新が必要なタグだけを含んでいる
      * 
      * @return array
      */
@@ -70,11 +69,11 @@ class UpdateRequest extends FormRequest
     }
 
     /**
-     * タグ付を解除する必要のあるタグ一覧を取得する
+     * タグ付を解除する必要があるタグ一覧を取得する
      * 
      * @return array
      */
-    public function getShouldDetachTags()
+    public function getTagsDataShouldDetached()
     {
         return array_filter(
             $this->validated()['tags_before_edit'],
