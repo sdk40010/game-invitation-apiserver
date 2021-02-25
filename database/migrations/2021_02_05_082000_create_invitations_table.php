@@ -17,7 +17,7 @@ class CreateInvitationsTable extends Migration
             $table->uuid('id')->primary();
             $table->unsignedBigInteger('user_id');
             $table->string('title', 255);
-            $table->string('description')->nullable();
+            $table->text('description')->nullable();
             $table->dateTime('start_time');
             $table->dateTime('end_time');
             $table->unsignedTinyInteger('capacity');

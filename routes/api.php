@@ -27,12 +27,18 @@ Route::middleware(['camelToSnake', 'snakeToCamel'])->prefix('v1')->group(functio
     // 認証が必要なルート
     Route::middleware('auth')->group(function () {
         Route::prefix('invitations')->group(function () {
+            // 募集
             Route::get('/{invitation}', 'InvitationController@show');
             Route::post('/', 'InvitationController@store');
             Route::put('/{invitation}', 'InvitationController@update');
             Route::delete('/{invitation}', 'InvitationController@delete');
+
+            // コメント
+            Route::get('/{invitation}/comments', 'CommentController@index');
+            Route::post('/{invitation}/comments', 'CommentController@store');
         });
 
+        // タグ
         Route::prefix('tags')->group(function () {
             Route::get('/', 'TagController@index');
         });

@@ -46,4 +46,12 @@ class Invitation extends UUIDModel
         return $this->belongsToMany(Tag::class, 'tagmaps')
             ->withTimestamps();
     }
+
+    /**
+     * コメント一覧
+     */
+    public function comments()
+    {
+        return $this->hasMany(Comment::class);
+    }
 }
