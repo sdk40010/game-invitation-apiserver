@@ -36,6 +36,7 @@ Route::middleware(['camelToSnake', 'snakeToCamel'])->prefix('v1')->group(functio
             // コメント
             Route::get('/{invitation}/comments', 'CommentController@index');
             Route::post('/{invitation}/comments', 'CommentController@store');
+            Route::put('/{invitation}/comments/{comment}', 'CommentController@update');
         });
 
         // タグ

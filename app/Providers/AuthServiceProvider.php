@@ -4,6 +4,9 @@ namespace App\Providers;
 
 use App\Models\Invitation;
 use App\Policies\InvitationPolicy;
+use App\Models\Comment;
+use App\Policies\CommentPolicy;
+
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
 use Illuminate\Support\Facades\Gate;
 
@@ -15,7 +18,8 @@ class AuthServiceProvider extends ServiceProvider
      * @var array
      */
     protected $policies = [
-        Invitation::class => InvitationPolicy::class
+        Invitation::class => InvitationPolicy::class,
+        Comment::class => CommentPolicy::class
     ];
 
     /**

@@ -4,9 +4,12 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Http\Requests\Comment\StoreRequest;
+use App\Http\Requests\Comment\UpdateRequest;
 
 use App\Models\Comment;
 use App\Models\Invitation;
+
+use App\Http\Resources\CommentResource;
 
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
@@ -19,7 +22,7 @@ class CommentController extends Controller
     public function index(Request $request, Invitation $invitation)
     {
         $comments = $invitation->comments()->with('user')->latest()->get();
-        return response()->json($comments);
+        return CommentResource::collection($comments);
     }
 
     /**
@@ -33,6 +36,15 @@ class CommentController extends Controller
                 ->associate(Auth::user())
         );
 
-        return response()->json($comment);
+        return new CommentResource($comment);
+    }
+
+    /**
+     * コメントの更新
+     */
+    public function update(UpdateRequest $request, Invitation $invitation, Comment $comment)
+    {
+        $comment->fill($request->getCommentData())->save();
+        return new CommentResource($comment->load('user'));
     }
 }

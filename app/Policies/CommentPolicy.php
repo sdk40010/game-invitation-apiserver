@@ -2,11 +2,11 @@
 
 namespace App\Policies;
 
-use App\Models\Invitation;
+use App\Models\Comment;
 use App\Models\User;
 use Illuminate\Auth\Access\HandlesAuthorization;
 
-class InvitationPolicy
+class CommentPolicy
 {
     use HandlesAuthorization;
 
@@ -21,10 +21,10 @@ class InvitationPolicy
     }
 
     /**
-     * ユーザーが募集を更新・削除可能かどうか判定する
+     * ユーザーがコメントを更新・削除可能かどうか判定する
      */
-    public function updateOrDelete(User $user, Invitation $invitation)
+    public function updateOrDelete(User $user, Comment $comment)
     {
-        return $user->id === $invitation->user_id;
+        return $user->id === $comment->user_id;
     }
 }

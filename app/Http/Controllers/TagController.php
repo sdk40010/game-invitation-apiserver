@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Tag;
-use App\Http\Resources\Tag as TagResource;
 
 class TagController extends Controller
 {
@@ -13,8 +12,6 @@ class TagController extends Controller
      */
     public function index(Request $request)
     {
-        return TagResource::collection(
-            Tag::orderBy('count', 'desc')->get()
-        );
+        return response()->json(Tag::orderBy('count', 'desc')->get());
     }
 }
