@@ -5,11 +5,10 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Http\Requests\Comment\StoreRequest;
 use App\Http\Requests\Comment\UpdateRequest;
+use App\Http\Requests\Comment\DeleteRequest;
 
 use App\Models\Comment;
 use App\Models\Invitation;
-
-use App\Http\Resources\CommentResource;
 
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
@@ -22,7 +21,7 @@ class CommentController extends Controller
     public function index(Request $request, Invitation $invitation)
     {
         $comments = $invitation->comments()->with('user')->latest()->get();
-        return CommentResource::collection($comments);
+        return response()->json($comments);
     }
 
     /**
@@ -36,7 +35,7 @@ class CommentController extends Controller
                 ->associate(Auth::user())
         );
 
-        return new CommentResource($comment);
+        return response()->json($comment);
     }
 
     /**
@@ -45,6 +44,15 @@ class CommentController extends Controller
     public function update(UpdateRequest $request, Invitation $invitation, Comment $comment)
     {
         $comment->fill($request->getCommentData())->save();
-        return new CommentResource($comment->load('user'));
+        return response()->json($comment->load('user'));
+    }
+
+    /**
+     * コメントの削除
+     */
+    public function delete(DeleteRequest $request, Invitation $invitation, Comment $comment)
+    {
+        $comment->delete();
+        return response()->json(['message' => 'コメントが削除されました。']);
     }
 }

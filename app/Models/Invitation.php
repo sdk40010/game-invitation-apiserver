@@ -3,12 +3,16 @@
 namespace App\Models;
 
 use App\Models\UUIDModel;
+use App\Models\TimeStampFormat;
+use Illuminate\Support\Carbon;
 
 class Invitation extends UUIDModel
 {
-    protected $casts = [
-        'start_time' => 'datetime',
-        'end_time' => 'datetime'
+    use TimeStampFormat;
+
+    protected $dates = [
+        'start_time',
+        'end_time',
     ];
 
     protected $fillable = [
@@ -53,5 +57,27 @@ class Invitation extends UUIDModel
     public function comments()
     {
         return $this->hasMany(Comment::class);
+    }
+
+    /**
+     * 開始時刻の取得
+     *
+     * @return string
+     */
+    public function getStartTimeAttribute($value)
+    {
+        $startTime = Carbon::parse($value);
+        return $startTime->format('Y/m/d H:i');
+    }
+
+    /**
+     * 終了時刻の取得
+     *
+     * @return string
+     */
+    public function getEndTimeAttribute($value)
+    {
+        $endTime = Carbon::parse($value);
+        return $endTime->format('Y/m/d H:i');
     }
 }

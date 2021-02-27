@@ -37,6 +37,7 @@ Route::middleware(['camelToSnake', 'snakeToCamel'])->prefix('v1')->group(functio
             Route::get('/{invitation}/comments', 'CommentController@index');
             Route::post('/{invitation}/comments', 'CommentController@store');
             Route::put('/{invitation}/comments/{comment}', 'CommentController@update');
+            Route::delete('/{invitation}/comments/{comment}', 'CommentController@delete');
         });
 
         // タグ

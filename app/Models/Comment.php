@@ -4,9 +4,11 @@ namespace App\Models;
 
 use App\Models\User;
 use Illuminate\Database\Eloquent\Model;
+use App\Models\TimeStampFormat;
 
 class Comment extends Model
 {
+    use TimeStampFormat;
 
     protected $fillable = ['content'];
 
