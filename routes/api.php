@@ -2,6 +2,7 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use Lcobucci\JWT\Signer\Rsa;
 
 /*
 |--------------------------------------------------------------------------
@@ -34,10 +35,17 @@ Route::middleware(['camelToSnake', 'snakeToCamel'])->prefix('v1')->group(functio
             Route::delete('/{invitation}', 'InvitationController@delete');
 
             // コメント
-            Route::get('/{invitation}/comments', 'CommentController@index');
-            Route::post('/{invitation}/comments', 'CommentController@store');
-            Route::put('/{invitation}/comments/{comment}', 'CommentController@update');
-            Route::delete('/{invitation}/comments/{comment}', 'CommentController@delete');
+            Route::prefix('/{invitation}/comments')->group(function () {
+                Route::get('/', 'CommentController@index');
+                Route::post('/', 'CommentController@store');
+                Route::put('/{comment}', 'CommentController@update');
+                Route::delete('/{comment}', 'CommentController@delete');
+            });
+        });
+
+        Route::prefix('comments/{comment}')->group(function () {
+             // 返信
+             Route::get('/replies', 'ReplyController@index');
         });
 
         // タグ

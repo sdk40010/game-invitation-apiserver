@@ -13,7 +13,17 @@ class Comment extends Model
     protected $fillable = ['content'];
 
     /**
-     * コメント対象の募集
+     * 常にロードするリレーション
+     */
+    protected $with = ['user'];
+
+    /**
+     * 常にロードするリレーションの件数
+     */
+    protected $withCount = ['replies'];
+
+    /**
+     * コメント先の募集
      */
     public function invitation()
     {
@@ -29,7 +39,7 @@ class Comment extends Model
     }
 
     /**
-     * コメントへの返信一覧
+     * コメントの返信一覧
      */
     public function replies()
     {

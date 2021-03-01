@@ -20,7 +20,7 @@ class CommentController extends Controller
      */
     public function index(Request $request, Invitation $invitation)
     {
-        $comments = $invitation->comments()->with('user')->latest()->get();
+        $comments = $invitation->comments()->latest()->get();
         return response()->json($comments);
     }
 
