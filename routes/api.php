@@ -37,15 +37,17 @@ Route::middleware(['camelToSnake', 'snakeToCamel'])->prefix('v1')->group(functio
             // コメント
             Route::prefix('/{invitation}/comments')->group(function () {
                 Route::get('/', 'CommentController@index');
+                Route::get('/{comment}', 'CommentController@show');
                 Route::post('/', 'CommentController@store');
                 Route::put('/{comment}', 'CommentController@update');
                 Route::delete('/{comment}', 'CommentController@delete');
             });
         });
 
+        // 返信
         Route::prefix('comments/{comment}')->group(function () {
-             // 返信
              Route::get('/replies', 'ReplyController@index');
+             Route::post('/replies', 'ReplyController@store');
         });
 
         // タグ

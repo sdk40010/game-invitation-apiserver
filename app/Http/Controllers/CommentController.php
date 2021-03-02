@@ -9,7 +9,7 @@ use App\Http\Requests\Comment\DeleteRequest;
 
 use App\Models\Comment;
 use App\Models\Invitation;
-
+use Google\Cloud\Storage\Connection\Rest;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 
@@ -22,6 +22,14 @@ class CommentController extends Controller
     {
         $comments = $invitation->comments()->latest()->get();
         return response()->json($comments);
+    }
+
+    /**
+     * コメントの取得
+     */
+    public function show(Request $request, Invitation $invitation, Comment $comment)
+    {
+        return response()->json($comment);
     }
 
     /**

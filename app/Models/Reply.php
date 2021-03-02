@@ -9,10 +9,12 @@ class Reply extends Model
 {
     use TimeStampFormat;
 
+    protected $fillable = ['content'];
+
     /**
      * 常にロードするリレーション
      */
-    protected $with = ['user'];
+    protected $with = ['user', 'comment.user'];
 
     /**
      * 返信先のコメント
