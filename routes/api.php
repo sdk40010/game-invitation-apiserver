@@ -48,6 +48,8 @@ Route::middleware(['camelToSnake', 'snakeToCamel'])->prefix('v1')->group(functio
         Route::prefix('comments/{comment}')->group(function () {
              Route::get('/replies', 'ReplyController@index');
              Route::post('/replies', 'ReplyController@store');
+             Route::put('/replies/{reply}', 'ReplyController@update');
+             Route::delete('/replies/{reply}', 'ReplyController@delete');
         });
 
         // タグ

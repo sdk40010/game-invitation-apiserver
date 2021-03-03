@@ -9,12 +9,12 @@ class Reply extends Model
 {
     use TimeStampFormat;
 
-    protected $fillable = ['content'];
+    protected $fillable = ['content', 'to'];
 
     /**
      * 常にロードするリレーション
      */
-    protected $with = ['user', 'comment.user'];
+    protected $with = ['user', 'comment.user', 'to'];
 
     /**
      * 返信先のコメント
@@ -28,5 +28,12 @@ class Reply extends Model
      */
     public function user() {
         return $this->belongsTo(User::class);
+    }
+
+    /**
+     * 返信先のユーザー
+     */
+    public function to() {
+        return $this->belongsTo(User::class, 'to');
     }
 }

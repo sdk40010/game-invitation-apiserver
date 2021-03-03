@@ -29,11 +29,11 @@ class StoreRequest extends FormRequest
     }
 
     /**
-     * コメントデータを取得する
+     * バリデーション済みのコメントデータを取得する
      */
     public function getCommentData()
     {
-        $comment = $this->input('comment');
-        return [ 'content' => $comment ];
+        $validated = $this->validated();
+        return [ 'content' => $validated['comment'] ];
     }
 }

@@ -18,7 +18,8 @@ class CommentTableSeeder extends Seeder
         $users = User::all();
 
         $invitations->each(function ($invitation) use ($users) {
-            for ($i = 0; $i < rand(0, 10); $i++) {
+            // for ($i = 0; $i < rand(0, 10); $i++) {
+            for ($i = 0; $i < 1; $i++) {
                 $invitation->comments()->save(
                     factory(Comment::class)
                         ->make()

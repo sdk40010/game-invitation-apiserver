@@ -18,7 +18,8 @@ class ReplyTableSeeder extends Seeder
         $users = User::all();
 
         $comments->each(function ($comment) use ($users) {
-            for ($i = 0; $i < rand(0, 10); $i++) {
+            // for ($i = 0; $i < rand(0, 10); $i++) {
+            for ($i = 0; $i < 5; $i++) {
                 $comment->replies()->save(
                     factory(Reply::class)
                         ->make()

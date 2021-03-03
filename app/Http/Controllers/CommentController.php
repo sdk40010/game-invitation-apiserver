@@ -61,6 +61,6 @@ class CommentController extends Controller
     public function delete(DeleteRequest $request, Invitation $invitation, Comment $comment)
     {
         $comment->delete();
-        return response()->json(['message' => 'コメントが削除されました。']);
+        return response()->json(['message' => 'コメントを削除しました。']);
     }
 }
