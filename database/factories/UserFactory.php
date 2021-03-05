@@ -2,7 +2,7 @@
 
 /** @var \Illuminate\Database\Eloquent\Factory $factory */
 
-use App\User;
+use App\Models\User;
 use Faker\Generator as Faker;
 use Illuminate\Support\Str;
 
@@ -19,8 +19,8 @@ use Illuminate\Support\Str;
 
 $factory->define(User::class, function (Faker $faker) {
     return [
-        'firebase_uid' => Str::random(),
-        'name' => $faker->name,
+        'firebase_uid' => Str::random(28),
+        'name' => $faker->userName,
         'email' => $faker->unique()->safeEmail,
         'icon_url' => $faker->imageUrl()
     ];

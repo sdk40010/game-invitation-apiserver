@@ -42,6 +42,12 @@ Route::middleware(['camelToSnake', 'snakeToCamel'])->prefix('v1')->group(functio
                 Route::put('/{comment}', 'CommentController@update');
                 Route::delete('/{comment}', 'CommentController@delete');
             });
+
+            // 参加
+            Route::prefix('/{invitation}/participations')->group(function () {
+                Route::post('/', 'ParticipationController@store');
+                Route::delete('/', 'ParticipationController@delete');
+            });
         });
 
         // 返信

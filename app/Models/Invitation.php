@@ -10,11 +10,22 @@ class Invitation extends UUIDModel
 {
     use TimeStampFormat;
 
+    /**
+     * 常にロードするリレーション
+     */
+    protected $with = ['user', 'tags'];
+
+    /**
+     * Carbonインスタンスへ変換するカラム
+     */
     protected $dates = [
         'start_time',
         'end_time',
     ];
 
+    /**
+     * 複数代入可能な属性
+     */
     protected $fillable = [
         'use_id',
         'title',
@@ -39,7 +50,9 @@ class Invitation extends UUIDModel
     public function participants()
     {
         return $this->belongsToMany(User::class, 'participations')
-            ->withTimestamps();
+            ->as('participation')
+            ->withTimestamps()
+            ->using('App\Models\Participation');
     }
 
     /**

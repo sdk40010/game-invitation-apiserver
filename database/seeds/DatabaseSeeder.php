@@ -18,6 +18,7 @@ class DatabaseSeeder extends Seeder
             TagMapTableSeeder::class,
             CommentTableSeeder::class,
             ReplyTableSeeder::class,
+            ParticipationTableSeeder::class,
         ]);
     }
 }

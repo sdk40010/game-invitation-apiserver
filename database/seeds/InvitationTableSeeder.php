@@ -2,7 +2,6 @@
 
 use Illuminate\Database\Seeder;
 use App\Models\Invitation;
-use Illuminate\Support\Facades\DB;
 
 class InvitationTableSeeder extends Seeder
 {

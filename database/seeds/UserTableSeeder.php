@@ -12,6 +12,7 @@ class UserTableSeeder extends Seeder
      */
     public function run()
     {
+        // 実際のユーザー
         $dataSet = [
             [
                 'firebase_uid' => 'Yz52RbGrCQehcunzoen2qwGax8x1',
@@ -30,5 +31,8 @@ class UserTableSeeder extends Seeder
         foreach ($dataSet as $data) {
             User::create($data);
         }
+
+        // 架空のユーザー
+        factory(User::class, 10)->create();
     }
 }

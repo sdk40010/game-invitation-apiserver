@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Invitation;
-use App\Http\Resources\Tag as TagResource;
 
 class TagmapController extends Controller
 {
@@ -13,6 +12,6 @@ class TagmapController extends Controller
      */
     public function showTags(Invitation $invitation)
     {
-        return TagResource::collection($invitation->tags);
+        
     }
 }

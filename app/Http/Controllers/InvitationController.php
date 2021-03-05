@@ -23,8 +23,7 @@ class InvitationController extends Controller
      */
     public function index(IndexRequest $request)
     {
-        $invitations = Invitation::with(['user', 'tags'])
-            ->where($request->getWhereClause())
+        $invitations = Invitation::where($request->getWhereClause())
             ->orderBy(...$request->getOrderByClause())
             ->paginate(30);
         
@@ -36,7 +35,10 @@ class InvitationController extends Controller
      */
     public function show(Invitation $invitation)
     {
-        $invitation->load(['user', 'tags']);
+        $invitation->load(['participants' => function ($query) {
+            // 参加した日時が早い順
+            $query->orderBy('participations.created_at', 'asc'); 
+        }]);
         return response()->json($invitation);
     }
 
@@ -45,12 +47,15 @@ class InvitationController extends Controller
      */
     public function store(StoreRequest $request)
     {
-        // 募集の保存
+        // 募集を保存する
         $invitation = new Invitation($request->validated());
         $invitation->user()->associate(Auth::user())->save();
 
-        // タグとタグマップへの保存
+        // タグとタグマップを保存する
         $this->upsertTags($request->getTagsData(), $invitation);
+
+        // 募集の投稿者を最初の参加者として保存する
+        $invitation->participants()->attach(Auth::user());
 
         return response()->json(['redirectTo' => '/invitations'.'/'.$invitation->id]);
     }
@@ -60,11 +65,11 @@ class InvitationController extends Controller
      */
     public function update(UpdateRequest $request, Invitation $invitation)
     {
-        // 募集の更新
+        // 募集を更新する
         $invitation->fill($request->validated());
         $invitation->save();
 
-        //タグとタグマップの更新
+        //タグとタグマップを更新する
         $this->upsertTags($request->getTagsData(), $invitation);
         foreach ($request->getTagsDataShouldDetached() as $tag) {
             $invitation->tags()->detach($tag['id']);
@@ -94,6 +99,7 @@ class InvitationController extends Controller
             $tag->fill($tagData)->save();
             $invitation->tags()->attach($tag->id);
         }
+        
         foreach ($tagsData['new'] as $tagData) {
             $tag = Tag::create($tagData);
             $invitation->tags()->attach($tag->id);

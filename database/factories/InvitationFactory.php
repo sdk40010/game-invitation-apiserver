@@ -3,10 +3,13 @@
 /** @var \Illuminate\Database\Eloquent\Factory $factory */
 
 use App\Models\Invitation;
+use App\Models\User;
 use Faker\Generator as Faker;
 use Illuminate\Support\Carbon;
 
 $factory->define(Invitation::class, function (Faker $faker) {
+    $count = User::count();
+
     $startTime = $faker->dateTimeBetween(
         Carbon::now()->addMonth(2),
         Carbon::now()->addMonth(4)
@@ -16,14 +19,24 @@ $factory->define(Invitation::class, function (Faker $faker) {
         Carbon::parse($startTime)->addHours(4)
     );
 
+    // return [
+    //     'id' => $faker->uuid,
+    //     'user_id' => $faker->randomElement(range(1, $count)),
+    //     'title' => $faker->word,
+    //     'description' => $faker->text,
+    //     'start_time' => $startTime,
+    //     'end_time' => $endTime,
+    //     'capacity' => $faker->randomElement(range(1, 10))
+    // ];
+
     return [
         'id' => $faker->uuid,
-        'user_id' => $faker->randomElement(range(1, 2)),
+        'user_id' => $faker->randomElement(range(2, $count)),
         'title' => $faker->word,
         'description' => $faker->text,
         'start_time' => $startTime,
         'end_time' => $endTime,
-        'capacity' => $faker->randomElement(range(1, 10))
+        'capacity' => $faker->randomElement(range(5, 5))
     ];
 });
 
