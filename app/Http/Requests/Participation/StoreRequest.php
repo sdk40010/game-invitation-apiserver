@@ -4,7 +4,7 @@ namespace App\Http\Requests\Participation;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-use App\Models\Invitation;
+use Illuminate\Support\Carbon;
 
 use Illuminate\Support\Facades\Log;
 
@@ -18,20 +18,22 @@ class StoreRequest extends FormRequest
     public function authorize()
     {
         $invitation = $this->route('invitation');
-        $notParticipated = false;
-        $canParticipate = false;
+        $notParticipatedIn = false;
+        $canParticipateIn = false;
 
         if ($invitation) {
-            // ユーザーが募集に参加済みでない
-            $notParticipated = $invitation->participants->contains(function ($participant) {
+            // ユーザーが募集に参加済みでないかどうか
+            $notParticipatedIn = $invitation->participants->contains(function ($participant) {
                 return $this->user()->id !== $participant->id;
             });
 
-            // 定員に空きがある
-            $canParticipate = $invitation->capacity > $invitation->participants->count();
+            // 募集に参加可能かどうか
+            $canParticipateIn =
+                $invitation->capacity > $invitation->participants_count ||
+                Carbon::parse($invitation->start_time) > Carbon::now();
         }
 
-        return $invitation && $notParticipated && $canParticipate; 
+        return $invitation && $notParticipatedIn && $canParticipateIn; 
     }
 
     /**

@@ -21,6 +21,7 @@ Route::middleware(['camelToSnake', 'snakeToCamel'])->prefix('v1')->group(functio
     Route::post('/logout', 'Auth\LoginController@logout');
     Route::get('/login/check', 'Auth\LoginController@check');
 
+    // Topページ
     Route::prefix('invitations')->group(function () {
         Route::get('/', 'InvitationController@index');
     });
@@ -62,5 +63,11 @@ Route::middleware(['camelToSnake', 'snakeToCamel'])->prefix('v1')->group(functio
         Route::prefix('tags')->group(function () {
             Route::get('/', 'TagController@index');
         });
+
+         // ユーザー
+         Route::prefix('users/{user}')->group(function () {
+            Route::get('/', 'UserController@showInvitations');
+            Route::get('/participations', 'UserController@showParticipations');
+         });
     });
 });

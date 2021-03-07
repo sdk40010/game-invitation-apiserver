@@ -4,7 +4,6 @@ namespace App\Models;
 
 use App\Models\Invitation;
 use App\Models\Notification;
-use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 
@@ -13,7 +12,7 @@ class User extends Authenticatable
     use Notifiable;
 
     /**
-     * The attributes that are mass assignable.
+     * 複数代入可能な属性
      *
      * @var array
      */
@@ -22,37 +21,33 @@ class User extends Authenticatable
     ];
 
     /**
-     * The attributes that should be hidden for arrays.
-     *
-     * @var array
+     * ユーザーが投稿した募集一覧
      */
-    protected $hidden = [
-    ];
-
-    /**
-     * The attributes that should be cast to native types.
-     *
-     * @var array
-     */
-    protected $casts = [
-        'email_verified_at' => 'datetime',
-    ];
-
-    public function invitations()
+    public function invitationsPosted()
     {
         return $this->hasMany(Invitation::class);
     }
 
-    public function participatingInvitations()
+    /**
+     * ユーザーが参加した募集一覧
+     */
+    public function invitationsParticipatedIn()
     {
-        return $this->belongsTo(Invitation::class, 'participations');
+        return $this->belongsToMany(Invitation::class, 'participations')
+            ->as('participation')
+            ->withTimestamps()
+            ->using('App\Models\Participation');;
     }
 
+    /**
+     * ユーザー宛の通知一覧
+     */
     public function notifications()
     {
         return $this->hasMany(Notification::class);
     }
 
+    // ユーザーのフレンド一覧
     public function friends()
     {
         return $this->belongsToMany(User::class, 'friendships')

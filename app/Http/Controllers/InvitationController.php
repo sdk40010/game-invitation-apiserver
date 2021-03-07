@@ -10,6 +10,7 @@ use App\Http\Requests\Invitation\DeleteRequest;
 
 use App\Models\Invitation;
 use App\Http\Resources\InvitationCollection;
+use App\Http\Resources\InvitationResource;
 use App\Models\Tag;
 
 use Illuminate\Support\Facades\Auth;
@@ -36,10 +37,10 @@ class InvitationController extends Controller
     public function show(Invitation $invitation)
     {
         $invitation->load(['participants' => function ($query) {
-            // 参加した日時が早い順
-            $query->orderBy('participations.created_at', 'asc'); 
+            // 参加日時の古い順
+            $query->orderBy('participations.created_at', 'asc');
         }]);
-        return response()->json($invitation);
+        return new InvitationResource($invitation);
     }
 
     /**

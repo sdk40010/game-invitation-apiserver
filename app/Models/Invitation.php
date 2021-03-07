@@ -16,6 +16,11 @@ class Invitation extends UUIDModel
     protected $with = ['user', 'tags'];
 
     /**
+     * 常にロードするリレーションの件数
+     */
+    protected $withCount = ['participants'];
+
+    /**
      * Carbonインスタンスへ変換するカラム
      */
     protected $dates = [

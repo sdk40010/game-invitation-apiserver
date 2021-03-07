@@ -29,9 +29,11 @@ $factory->define(Invitation::class, function (Faker $faker) {
     //     'capacity' => $faker->randomElement(range(1, 10))
     // ];
 
+    $user = User::where('name', 'sdk 40010')->first();
+
     return [
         'id' => $faker->uuid,
-        'user_id' => $faker->randomElement(range(2, $count)),
+        'user_id' => $faker->randomElement(range(1, $count)),
         'title' => $faker->word,
         'description' => $faker->text,
         'start_time' => $startTime,

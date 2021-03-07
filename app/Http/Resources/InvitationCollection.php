@@ -21,4 +21,9 @@ class InvitationCollection extends ResourceCollection
      * データラッパーのキー名
      */
     public static $wrap = 'invitations';
+
+    /**
+     * 収集するリソースクラス
+     */
+    public $collects = "App\Http\Resources\InvitationResource";
 }
