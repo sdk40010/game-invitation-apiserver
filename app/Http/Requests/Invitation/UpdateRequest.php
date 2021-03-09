@@ -31,7 +31,7 @@ class UpdateRequest extends FormRequest
             'end_time' => 'required|after:start_time',
             'capacity' => 'required|min:1|max:10', // capacityの最小値は参加者の数で決まる
             'tags' => 'array|max:10',
-            'tags_before_edit' => 'array|max:10'
+            'tags_before_update' => 'array|max:10'
         ];
     }
 
@@ -49,7 +49,7 @@ class UpdateRequest extends FormRequest
         $shouldUpdateTags = array_filter(
             $this->validated()['tags'], 
             function ($value) {
-                return !in_array($value, $this->validated()['tags_before_edit']);
+                return !in_array($value, $this->validated()['tags_before_update']);
             }
         );
         
@@ -76,7 +76,7 @@ class UpdateRequest extends FormRequest
     public function getTagsDataShouldDetached()
     {
         return array_filter(
-            $this->validated()['tags_before_edit'],
+            $this->validated()['tags_before_update'],
             function ($value) {
                 return !in_array($value, $this->validated()['tags']);
             }

@@ -26,7 +26,7 @@ class InvitationController extends Controller
     {
         $invitations = Invitation::where($request->getWhereClause())
             ->orderBy(...$request->getOrderByClause())
-            ->paginate(30);
+            ->paginate(20);
         
         return new InvitationCollection($invitations);
     }
@@ -36,10 +36,15 @@ class InvitationController extends Controller
      */
     public function show(Invitation $invitation)
     {
-        $invitation->load(['participants' => function ($query) {
-            // 参加日時の古い順
-            $query->orderBy('participations.created_at', 'asc');
-        }]);
+        $invitation
+            ->load(['participants' => function ($query) {
+                // 参加日時の古い順
+                $query->orderBy('participations.created_at', 'asc');
+            }])
+            ->load(['user' => function ($query) {
+                // 投稿履歴と参加履歴の件数
+                $query->withCount(['invitationsPosted', 'invitationsParticipatedIn']);
+            }]);
         return new InvitationResource($invitation);
     }
 

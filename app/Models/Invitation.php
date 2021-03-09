@@ -6,6 +6,8 @@ use App\Models\UUIDModel;
 use App\Models\TimeStampFormat;
 use Illuminate\Support\Carbon;
 
+use Illuminate\Support\Facades\Log;
+
 class Invitation extends UUIDModel
 {
     use TimeStampFormat;
@@ -26,6 +28,14 @@ class Invitation extends UUIDModel
     protected $dates = [
         'start_time',
         'end_time',
+    ];
+
+    /**
+     * モデルの配列に追加するアクセサ
+     */
+    protected $appends = [
+        'start_in',
+        'interval',
     ];
 
     /**
@@ -79,8 +89,6 @@ class Invitation extends UUIDModel
 
     /**
      * 開始時刻の取得
-     *
-     * @return string
      */
     public function getStartTimeAttribute($value)
     {
@@ -90,12 +98,35 @@ class Invitation extends UUIDModel
 
     /**
      * 終了時刻の取得
-     *
-     * @return string
      */
     public function getEndTimeAttribute($value)
     {
         $endTime = Carbon::parse($value);
         return $endTime->format('Y/m/d H:i');
+    }
+
+    /**
+     * 現在から開始時刻までの差分を取得する
+     */
+    public function getStartInAttribute()
+    {
+        return Carbon::parse($this->attributes['start_time'])->diffForHumans();
+    }
+
+    /**
+     * 開始時刻と終了時刻の差分を取得する
+     */
+    public function getIntervalAttribute()
+    {
+        $startTime = Carbon::parse($this->attributes['start_time']);
+        $endTime = Carbon::parse($this->attributes['end_time']);
+
+        $interval = $endTime->diffAsCarbonInterval($startTime);
+        $parts = $interval->totalHours < 1
+            ? 1 // 1時間未満のときは分のみ表示する
+            : 2; // 1時間以上のときは時間と分を表示する
+
+        return $interval->forHumans(['parts' => $parts]);
+        
     }
 }
