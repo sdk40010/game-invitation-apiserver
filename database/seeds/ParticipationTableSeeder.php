@@ -26,6 +26,7 @@ class ParticipationTableSeeder extends Seeder
         // });
         
         $invitations->each(function ($invitation) use($users) {
+            // 募集の作成者を最初の参加者として保存する
             $invitation->participants()->attach($invitation->user_id);
 
             $n = $invitation->capacity - 2;

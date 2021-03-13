@@ -7,12 +7,14 @@ use App\Http\Requests\Invitation\IndexRequest;
 use App\Http\Requests\Invitation\StoreRequest;
 use App\Http\Requests\Invitation\UpdateRequest;
 use App\Http\Requests\Invitation\DeleteRequest;
+use App\Http\Requests\Invitation\SearchRequest;
 
 use App\Models\Invitation;
 use App\Http\Resources\InvitationCollection;
 use App\Http\Resources\InvitationResource;
 use App\Models\Tag;
 
+use App\Repositories\InvitationRepository;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 
@@ -91,6 +93,15 @@ class InvitationController extends Controller
     {
         $invitation->delete();
         return response()->json(['message' => '募集が削除されました。']);
+    }
+
+    /**
+     * 募集を検索する
+     */
+    public function search(SearchRequest $request, InvitationRepository $invitationRepository)
+    {
+        return $invitationRepository->search($request->searchParams());
+        // return new InvitationCollection($invitations);
     }
 
     /**

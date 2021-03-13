@@ -2,6 +2,7 @@
 
 namespace App\Providers;
 
+use App\Repositories\InvitationRepository;
 use Illuminate\Http\Resources\Json\Resource;
 use Illuminate\Support\ServiceProvider;
 
@@ -27,4 +28,13 @@ class AppServiceProvider extends ServiceProvider
         // データラップを行わないようにするための設定
         Resource::withoutWrapping();
     }
+
+    /**
+     * 登録する必要のある全コンテナシングルトン
+     *
+     * @var array
+     */
+    public $singletons = [
+        InvitationRepository::class => InvitationRepository::class
+    ];
 }

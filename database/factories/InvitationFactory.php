@@ -19,18 +19,6 @@ $factory->define(Invitation::class, function (Faker $faker) {
         Carbon::parse($startTime)->addHours(4)
     );
 
-    // return [
-    //     'id' => $faker->uuid,
-    //     'user_id' => $faker->randomElement(range(1, $count)),
-    //     'title' => $faker->word,
-    //     'description' => $faker->text,
-    //     'start_time' => $startTime,
-    //     'end_time' => $endTime,
-    //     'capacity' => $faker->randomElement(range(1, 10))
-    // ];
-
-    $user = User::where('name', 'sdk 40010')->first();
-
     return [
         'id' => $faker->uuid,
         'user_id' => $faker->randomElement(range(1, $count)),
@@ -38,7 +26,7 @@ $factory->define(Invitation::class, function (Faker $faker) {
         'description' => $faker->text,
         'start_time' => $startTime,
         'end_time' => $endTime,
-        'capacity' => $faker->randomElement(range(5, 5))
+        'capacity' => $faker->randomElement(range(1, 10))
     ];
 });
 

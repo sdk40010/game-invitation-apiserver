@@ -21,8 +21,6 @@ class CreateUsersTable extends Migration
             $table->string('icon_url');
             $table->boolean('is_admin')->default(false);
             $table->timestamps();
-
-            $table->index('firebase_uid');
         });
     }
 

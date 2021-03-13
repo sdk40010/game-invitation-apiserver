@@ -3,9 +3,10 @@
 namespace App\Providers;
 
 use Illuminate\Support\ServiceProvider;
+use Illuminate\Contracts\Support\DeferrableProvider;
 use Kreait\Firebase\Factory;
 
-class FirebaseServiceProvider extends ServiceProvider
+class FirebaseServiceProvider extends ServiceProvider implements DeferrableProvider
 {
     /**
      * Register services.

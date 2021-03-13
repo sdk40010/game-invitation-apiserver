@@ -21,9 +21,15 @@ Route::middleware(['camelToSnake', 'snakeToCamel'])->prefix('v1')->group(functio
     Route::post('/logout', 'Auth\LoginController@logout');
     Route::get('/login/check', 'Auth\LoginController@check');
 
-    // Topページ
+    // 募集一覧（トップページ、検索結果ページ）
     Route::prefix('invitations')->group(function () {
         Route::get('/', 'InvitationController@index');
+        Route::get('/search', 'InvitationController@search');
+    });
+
+    // タグ
+    Route::prefix('tags')->group(function () {
+        Route::get('/', 'TagController@index');
     });
 
     // 認証が必要なルート
@@ -57,11 +63,6 @@ Route::middleware(['camelToSnake', 'snakeToCamel'])->prefix('v1')->group(functio
              Route::post('/replies', 'ReplyController@store');
              Route::put('/replies/{reply}', 'ReplyController@update');
              Route::delete('/replies/{reply}', 'ReplyController@delete');
-        });
-
-        // タグ
-        Route::prefix('tags')->group(function () {
-            Route::get('/', 'TagController@index');
         });
 
          // ユーザー
