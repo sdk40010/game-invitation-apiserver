@@ -49,7 +49,7 @@ class InvitationRepository
             // タイトル
             ->when(isset($title), function (Builder $query) use ($title) {
                 foreach ($this->splitIntoWards($title) as $keyword) {
-                    $query->where('invitations.title', 'like', '%'.$keyword.'%');
+                    $query->where('invitations.title', 'like', $keyword.'%');
                 }
             })
             // 開始時刻の範囲

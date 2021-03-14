@@ -6,6 +6,7 @@ use App\Models\UUIDModel;
 use App\Models\TimeStampFormat;
 use Illuminate\Support\Carbon;
 
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 
 class Invitation extends UUIDModel
@@ -57,6 +58,41 @@ class Invitation extends UUIDModel
     public function user()
     {
         return $this->belongsTo(User::class);
+    }
+
+    /**
+     * 募集の作成者（プロフィール用の情報付）
+     */
+    public function userWithProfileInfo()
+    {
+        return $this->load(['user' => function ($query) {
+            $query->withCount([ // 投稿履歴、参加履歴、フレンドの件数
+                'invitationsPosted', 
+                'invitationsParticipatedIn',
+                'friends',
+                'inverseFriends'
+            ])
+            ->addSelect([ // ユーザーと募集の投稿者のフレンド関係
+                'friendship_status' => function ($query) {
+                    $query
+                        ->selectRaw('case when count(*) = 1 then friendships.status else null end')
+                        ->from('friendships')
+                        ->where(function ($query) {
+                            $query->where([ // 自分->相手のフレンド関係の場合
+                                ['user_id', Auth::user()->id],
+                                ['friend_id', $this->user->id]
+                            ]);
+                        })
+                        ->orWhere(function ($query){
+                            $query->where([ // 自分->相手のフレンド関係の場合
+                                ['user_id', $this->user->id],
+                                ['friend_id', Auth::user()->id]
+                            ]);
+                        })
+                        ->groupBy('friendships.user_id', 'friendships.status');
+                }
+            ]);
+        }]);
     }
 
     /**

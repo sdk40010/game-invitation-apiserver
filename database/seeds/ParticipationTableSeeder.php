@@ -4,6 +4,8 @@ use Illuminate\Database\Seeder;
 use App\Models\Invitation;
 use App\Models\User;
 
+use Illuminate\Support\Facades\Log;
+
 class ParticipationTableSeeder extends Seeder
 {
     /**
@@ -29,9 +31,11 @@ class ParticipationTableSeeder extends Seeder
             // 募集の作成者を最初の参加者として保存する
             $invitation->participants()->attach($invitation->user_id);
 
-            $n = $invitation->capacity - 2;
-            $random = $users->random($n);
+            $n = $invitation->capacity > 2 
+                ? $invitation->capacity - 2
+                : 0;
             for ($i = 0; $i < $n; $i++) {
+                $random = $users->random($n);
                 if ($random[$i]->id === $invitation->user_id
                 ) {
                     continue;

@@ -30,6 +30,10 @@ class InvitationResource extends JsonResource
                 Carbon::parse($resource['start_time']) > Carbon::now();
         }
 
+        // TODO UserResourceに $resource['user'] を渡し、
+        // フレンド一覧をもとにユーザーと投稿者のフレンド関係を判定する
+        // フレンド一覧は削除する？
+
         return $resource;
     }
 }

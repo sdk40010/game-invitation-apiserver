@@ -47,10 +47,29 @@ class User extends Authenticatable
         return $this->hasMany(Notification::class);
     }
 
-    // ユーザーのフレンド一覧
+    /**
+     * ユーザーがフレンド申請した人（自分->相手）
+     *  */ 
     public function friends()
     {
-        return $this->belongsToMany(User::class, 'friendships')
+        return $this->belongsToMany(User::class, 'friendships', 'user_id', 'friend_id')
             ->withTimestamps();
+    }
+
+    /**
+     * ユーザーにフレンド申請した人（相手->自分）
+     */
+    public function inverseFriends()
+    {
+        return $this->belongsToMany(User::class, 'friendships', 'friend_id', 'user_id')
+            ->withTimestamps();
+    }
+
+    /**
+     * 
+     */
+    public function isfollowing()
+    {
+        // return $this->
     }
 }

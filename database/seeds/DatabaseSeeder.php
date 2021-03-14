@@ -19,6 +19,7 @@ class DatabaseSeeder extends Seeder
             CommentTableSeeder::class,
             ReplyTableSeeder::class,
             ParticipationTableSeeder::class,
+            FriendshipTableSeeder::class,
         ]);
     }
 }

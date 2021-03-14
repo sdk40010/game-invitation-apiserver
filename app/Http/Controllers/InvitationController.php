@@ -39,14 +39,12 @@ class InvitationController extends Controller
     public function show(Invitation $invitation)
     {
         $invitation
-            ->load(['participants' => function ($query) {
+            ->load(['participants' => function ($query) { // 募集の参加者
                 // 参加日時の古い順
                 $query->orderBy('participations.created_at', 'asc');
             }])
-            ->load(['user' => function ($query) {
-                // 投稿履歴と参加履歴の件数
-                $query->withCount(['invitationsPosted', 'invitationsParticipatedIn']);
-            }]);
+            ->userWithProfileInfo();
+
         return new InvitationResource($invitation);
     }
 
@@ -101,7 +99,6 @@ class InvitationController extends Controller
     public function search(SearchRequest $request, InvitationRepository $invitationRepository)
     {
         return $invitationRepository->search($request->searchParams());
-        // return new InvitationCollection($invitations);
     }
 
     /**
