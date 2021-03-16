@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateFriendshipsTable extends Migration
+class CreateFollowingsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,21 +13,23 @@ class CreateFriendshipsTable extends Migration
      */
     public function up()
     {
-        Schema::create('friendships', function (Blueprint $table) {
+        Schema::create('followings', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->unsignedBigInteger('user_id');
-            $table->unsignedBigInteger('friend_id');
-            $table->enum('status', ['unapproved', 'approved', 'rejected'])->default('unapproved');
+            $table->unsignedBigInteger('following_id');
+            $table->boolean('blocked')->default(false);
             $table->timestamps();
 
             $table->foreign('user_id')
                 ->references('id')->on('users')
                 ->onDelete('cascade');
-            $table->foreign('friend_id')
+
+            $table->foreign('following_id')
                 ->references('id')->on('users')
                 ->onDelete('cascade');
+        
             $table->index('user_id');
-            $table->index('friend_id');
+            $table->index('following_id');
         });
     }
 
@@ -38,6 +40,6 @@ class CreateFriendshipsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('friendships');
+        Schema::dropIfExists('followings');
     }
 }

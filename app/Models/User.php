@@ -7,6 +7,9 @@ use App\Models\Notification;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
+
 class User extends Authenticatable
 {
     use Notifiable;
@@ -36,7 +39,7 @@ class User extends Authenticatable
         return $this->belongsToMany(Invitation::class, 'participations')
             ->as('participation')
             ->withTimestamps()
-            ->using('App\Models\Participation');;
+            ->using('App\Models\Participation');
     }
 
     /**
@@ -48,28 +51,67 @@ class User extends Authenticatable
     }
 
     /**
-     * ユーザーがフレンド申請した人（自分->相手）
-     *  */ 
-    public function friends()
+     * フォロー一覧
+     */
+    public function followings()
     {
-        return $this->belongsToMany(User::class, 'friendships', 'user_id', 'friend_id')
-            ->withTimestamps();
+        return $this->belongsToMany(User::class, 'followings', 'user_id', 'following_id')
+            ->withTimestamps();;
     }
 
     /**
-     * ユーザーにフレンド申請した人（相手->自分）
+     * フォロワー一覧
      */
-    public function inverseFriends()
+    public function followers()
     {
-        return $this->belongsToMany(User::class, 'friendships', 'friend_id', 'user_id')
+        return $this->belongsToMany(User::class, 'followings', 'following_id', 'user_id')
             ->withTimestamps();
     }
 
+
     /**
-     * 
+     * ユーザーのプロフィールをEagerロードする
      */
-    public function isfollowing()
+    public function withProfile($userId, $query = null)
     {
-        // return $this->
+        $query = $query ?? $this->query();
+
+        $query->withCount([
+            'invitationsPosted', 
+            'invitationsParticipatedIn',
+            'followings',
+            'followers',
+        ]);
+
+        if (Auth::user()) {
+            $this->addFollowingInfo($query, $userId);
+        }
+
+        return $query;
     }
+
+    public function addFollowingInfo($query, $userId) {
+        $createClosure = function ($whereClouse) {
+            return function ($query) use ($whereClouse) {
+                $query
+                    ->selectRaw('case when count(*) = 1 then true else 0 end')
+                    ->from('followings')
+                    ->where($whereClouse);
+            };
+        };
+
+        $query->addSelect([
+            'is_following' => $createClosure([ // ログインユーザーがユーザーをフォローしている
+                ['user_id', Auth::user()->id],
+                ['following_id', $userId]
+            ]),
+            'is_follower' => $createClosure([ // ユーザーがログインユーザーのフォロワーである
+                ['user_id', $userId],
+                ['following_id', Auth::user()->id]
+            ])
+        ]);
+
+        return $query;
+    }
+
 }

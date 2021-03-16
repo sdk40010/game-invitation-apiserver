@@ -23,10 +23,10 @@ class LoginController extends Controller
         try {
             $verifiedIdToken = $request->getVerifiedIdToken();
         } catch (InvalidToken $e) {
-            abort(400, '無効なトークンです。');
+            abort(400, '無効なトークンです');
         }
         catch (InvalidArgumentException $e) {
-            abort(400, 'トークンを解析できませんでした。');
+            abort(400, 'トークンを解析できませんでした');
         }
 
         // ユーザー登録
@@ -40,7 +40,7 @@ class LoginController extends Controller
             Auth::login($user);
             return response()->json(['user' => Auth::user()]);
         } else {
-            return abort(401, 'ユーザーアカウントを取得できませんでした。');
+            return abort(401, 'ユーザーアカウントを取得できませんでした');
         }
 
     }
@@ -50,14 +50,14 @@ class LoginController extends Controller
      */
     public function logout(Request $request) {
         Auth::logout();
-        return response()->json(['message' => "ログアウトしました。"]);
+        return response()->json(['message' => "ログアウトしました"]);
     }
 
     /**
      * ログインしているかどうか判定する
      */
     public function check(Request $request) {
-        $data = Auth::user() ? ["user" => Auth::user()] : ["message" => "ログインしていません。"];
+        $data = Auth::user() ? ["user" => Auth::user()] : ["message" => "ログインしていません"];
         return response()->json($data);
     }
 }

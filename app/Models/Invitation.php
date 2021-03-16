@@ -16,7 +16,10 @@ class Invitation extends UUIDModel
     /**
      * 常にロードするリレーション
      */
-    protected $with = ['user', 'tags'];
+    protected $with = [
+        'user',
+        'tags',
+    ];
 
     /**
      * 常にロードするリレーションの件数
@@ -61,38 +64,13 @@ class Invitation extends UUIDModel
     }
 
     /**
-     * 募集の作成者（プロフィール用の情報付）
+     * プロフィール情報を付与するためのクロージャを取得する
      */
-    public function userWithProfileInfo()
+    public function userWithProfile()
     {
-        return $this->load(['user' => function ($query) {
-            $query->withCount([ // 投稿履歴、参加履歴、フレンドの件数
-                'invitationsPosted', 
-                'invitationsParticipatedIn',
-                'friends',
-                'inverseFriends'
-            ])
-            ->addSelect([ // ユーザーと募集の投稿者のフレンド関係
-                'friendship_status' => function ($query) {
-                    $query
-                        ->selectRaw('case when count(*) = 1 then friendships.status else null end')
-                        ->from('friendships')
-                        ->where(function ($query) {
-                            $query->where([ // 自分->相手のフレンド関係の場合
-                                ['user_id', Auth::user()->id],
-                                ['friend_id', $this->user->id]
-                            ]);
-                        })
-                        ->orWhere(function ($query){
-                            $query->where([ // 自分->相手のフレンド関係の場合
-                                ['user_id', $this->user->id],
-                                ['friend_id', Auth::user()->id]
-                            ]);
-                        })
-                        ->groupBy('friendships.user_id', 'friendships.status');
-                }
-            ]);
-        }]);
+        return function ($query) {
+            $this->user()->getRelated()->withProfile($this->user_id, $query);
+        };
     }
 
     /**

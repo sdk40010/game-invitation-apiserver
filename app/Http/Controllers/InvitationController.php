@@ -43,7 +43,8 @@ class InvitationController extends Controller
                 // 参加日時の古い順
                 $query->orderBy('participations.created_at', 'asc');
             }])
-            ->userWithProfileInfo();
+            ->load(['user' => $invitation->userWithProfile()]);
+        
 
         return new InvitationResource($invitation);
     }
@@ -81,7 +82,7 @@ class InvitationController extends Controller
             $invitation->tags()->detach($tag['id']);
         }
 
-        return response()->json(['message' => '募集が更新されました。']);
+        return response()->json(['message' => '募集を更新しました']);
     }
 
     /**
@@ -90,7 +91,7 @@ class InvitationController extends Controller
     public function delete(DeleteRequest $request, Invitation $invitation)
     {
         $invitation->delete();
-        return response()->json(['message' => '募集が削除されました。']);
+        return response()->json(['message' => '募集を削除しました']);
     }
 
     /**

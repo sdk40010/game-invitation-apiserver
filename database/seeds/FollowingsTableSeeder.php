@@ -3,7 +3,7 @@
 use Illuminate\Database\Seeder;
 use App\Models\User;
 
-class FriendshipTableSeeder extends Seeder
+class FollowingsTableSeeder extends Seeder
 {
     /**
      * Run the database seeds.
@@ -15,15 +15,14 @@ class FriendshipTableSeeder extends Seeder
         $self = User::where('name', 'sdk 40010')->first();
         [$half1, $half2] = User::where('id', '!=', $self->id)->take(4)->get()->split(2);
 
-        // 自分->相手
+        // フォロー
         $half1->each(function ($user) use ($self) {
-            $self->friends()->attach($user);
+            $self->followings()->attach($user);
         });
 
-        // 相手->自分
+        // フォロワー
         $half2->each(function ($user) use ($self) {
-            $user->friends()->attach($self);
+            $user->followings()->attach($self);
         });
-
     }
 }

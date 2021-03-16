@@ -54,6 +54,6 @@ class ReplyController extends Controller
     public function delete(DeleteRequest $request, Comment $comment, Reply $reply)
     {
         $reply->delete();
-        return response()->json(['message' => '返信を削除しました。']);
+        return response()->json(['message' => '返信を削除しました']);
     }
 }

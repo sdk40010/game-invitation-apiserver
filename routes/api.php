@@ -65,15 +65,19 @@ Route::middleware(['camelToSnake', 'snakeToCamel'])->prefix('v1')->group(functio
              Route::delete('/replies/{reply}', 'ReplyController@delete');
         });
 
-        Route::prefix('users/{user}')->group(function () {
+        Route::prefix('users')->group(function () {
             // ユーザー
-            Route::get('/', 'UserController@showInvitations');
-            Route::get('/participations', 'UserController@showParticipations');
+            Route::prefix('{id}')->group(function () {
+                Route::get('/', 'UserController@showInvitations');
+                Route::get('/participations', 'UserController@showParticipations');
+            });
 
-            // フレンド
-            Route::prefix('firiendships')->group(function () {
-                Route::get('/', 'FriendshipController@show');
-                Route::post('/', 'FriendshipController@store');
+            Route::prefix('{user}')->group(function () {
+                // フォロー
+                Route::prefix('followings')->group(function () {
+                    Route::post('/', 'FollowingController@store');
+                    Route::delete('/', 'FollowingController@delete');
+                });
             });
         });
 

@@ -11,25 +11,19 @@ use Illuminate\Support\Facades\Log;
 
 class UserController extends Controller
 {
-    // リレーション件数の取得用
-    private static $count = ['invitationsPosted', 'invitationsParticipatedIn'];
-
     /**
      * ユーザーの投稿履歴を取得する
      */
-    public function showInvitations(Request $request, User $user)
+    public function showInvitations(Request $request, $id)
     {
-        // 投稿履歴と参加履歴の件数
-        $user->loadCount(static::$count);
-
-        $array = $user->toArray();
+        $user = (new User)->withProfile($id)->find($id);
 
         $invitations = $user->invitationsPosted()
             ->orderBy('created_at', 'desc') // 投稿日時の新しい順
             ->paginate(20);
 
-        // ページネーション用のメタ情報がついた投稿履歴
-        $array['posted']
+        $array = $user->toArray();
+        $array['posted'] // ページネーション用のメタ情報がついた投稿履歴
             = (new InvitationCollection($invitations))
                 ->toResponse($request)
                 ->getData(true);
@@ -40,11 +34,12 @@ class UserController extends Controller
     /**
      * ユーザーの参加履歴を取得する
      */
-    public function showParticipations(Request $request, User $user)
+    public function showParticipations(Request $request, $id)
     {
-        $user->loadCount(static::$count);
+        // $user->loadCount(static::$count);
+        $user = (new User)->withProfile($id)->find($id);
 
-        $array =$user->toArray();
+        $array = $user->toArray();
 
         $invitations = $user->invitationsParticipatedIn()
             ->orderBy('participations.created_at', 'desc') // 参加日時の新しい順
