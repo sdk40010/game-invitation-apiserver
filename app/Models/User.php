@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 
+
 class User extends Authenticatable
 {
     use Notifiable;
@@ -23,6 +24,11 @@ class User extends Authenticatable
     protected $fillable = [
         'firebase_uid', 'name', 'email', 'icon_url'
     ];
+
+    /**
+     * 隠蔽する属性
+     */
+    protected $hidden = ['pivot'];
 
     /**
      * ユーザーが投稿した募集一覧
@@ -73,11 +79,11 @@ class User extends Authenticatable
     /**
      * ユーザーのプロフィールをEagerロードする
      */
-    public function withProfile($query = null, $userIdColumn = null)
+    public static function withProfile($query = null)
     {
-        $query = $query ?? $this->query();
-        $userIdColumn = $userIdColumn ?? 'users.id';
+        $query = $query ?? static::query();
 
+        // 投稿件数、参加件数、フォロー数、フォロワー数
         $query->withCount([
             'invitationsPosted', 
             'invitationsParticipatedIn',
@@ -86,23 +92,26 @@ class User extends Authenticatable
         ]);
 
         if (Auth::user()) {
-            $createClosure = function ($whereClouse) {
-                return function ($query) use ($whereClouse) {
+            $createClosure = function ($whereClauses) {
+                return function ($query) use ($whereClauses) {
                     $query
                         ->selectRaw('case when count(*) = 1 then true else false end')
-                        ->from('followings')
-                        ->where($whereClouse);
+                        ->from('followings');
+                    
+                    foreach ($whereClauses as $clauses) {
+                        $query->whereRaw(...$clauses);
+                    }
                 };
             };
     
             $query->addSelect([
                 'is_following' => $createClosure([ // ログインユーザーがユーザーをフォローしている
-                    ['user_id', Auth::user()->id],
-                    ['following_id', $userIdColumn]
+                    ['user_id = ?', Auth::user()->id],
+                    ['following_id = users.id']
                 ]),
                 'is_follower' => $createClosure([ // ユーザーがログインユーザーのフォロワーである
-                    ['user_id', $userIdColumn],
-                    ['following_id', Auth::user()->id]
+                    ['user_id = users.id'],
+                    ['following_id = ?', Auth::user()->id]
                 ])
             ]);
         }
@@ -110,35 +119,7 @@ class User extends Authenticatable
         return $query;
     }
 
-    // public function withProfile($query = null, $userIdColumn = null)
-    // {
-    //     $query = $query ?? $this->query();
-    //     $userIdColumn = $userIdColumn ?? 'users.id';
-
-    //     $query->withCount([
-    //         'invitationsPosted', 
-    //         'invitationsParticipatedIn',
-    //         'followings',
-    //         'followers',
-    //     ]);
-
-    //     if (Auth::user()) {
-    //         $createSubQuery = function ($column, $whereClouse) {
-    //             return DB::table('followings')
-    //                 ->select($column)
-    //                 ->where($whereClouse)
-    //                 ->toSql();
-    //         };
     
-            
-
-    //         $query->selectRaw('if users.id in ('.$createSubQuery('').')');
-            
-
-    //     }
-
-    //     return $query;
-    // }
 
 
 }

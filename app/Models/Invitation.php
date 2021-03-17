@@ -5,6 +5,7 @@ namespace App\Models;
 use App\Models\UUIDModel;
 use App\Models\TimeStampFormat;
 use Illuminate\Support\Carbon;
+use App\Models\User;
 
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
@@ -69,8 +70,7 @@ class Invitation extends UUIDModel
     public function userWithProfile()
     {
         return function ($query) {
-            // $this->user()->getRelated()->withProfile($this->user_id, $query);
-            $this->user()->getRelated()->withProfile($query);
+            return User::withProfile($query);
         };
     }
 

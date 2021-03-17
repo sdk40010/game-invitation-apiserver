@@ -16,7 +16,7 @@ class UserController extends Controller
      * ユーザーを取得する
      */
     public function show(Request $request, $id) {
-        $user = (new User)->withProfile()->find($id);
+        $user = User::withProfile()->find($id);
         return response()->json($user);
     }
 
@@ -49,19 +49,9 @@ class UserController extends Controller
      */
     public function showFollowings(Request $request, $id)
     {
-        $followingsRelation = User::find($id)->followings();
-
-        $followings = $followingsRelation->getRelated()
-            ->withProfile($followingsRelation->getQuery())
+        $followings = User::withProfile(User::find($id)->followings())
             ->orderBy('followings.created_at', 'desc') // フォロー日時の新しい順
             ->paginate(20);
-
-        // デバック
-        // $array = UserResource::collection($followings)->toResponse($request)->getData(true);
-        // foreach ($array['data'] as $user) {
-        //     Log::debug($user['is_following']);
-        //     Log::debug($user['is_follower']);
-        // }
 
         UserResource::wrap('followings');
         return UserResource::collection($followings);
@@ -72,10 +62,7 @@ class UserController extends Controller
      */
     public function showFollowers(Request $request, $id)
     {
-        $followersRelation = User::find($id)->followers();
-
-        $followers = $followersRelation->getRelated()
-            ->withProfile($followersRelation->getQuery())
+        $followers = User::withProfile(User::find($id)->followers())
             ->orderBy('followings.created_at', 'desc') // フォローされた日時の新しい順
             ->paginate(20);
 
