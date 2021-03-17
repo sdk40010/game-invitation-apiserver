@@ -11,6 +11,11 @@ class Tag extends Model
         'count'
     ];
 
+    protected $hidden = ['pivot'];
+
+    /**
+     * タグが付いた募集一覧
+     */
     public function invitations()
     {
         return $this->belongsToMany(Invitation::class, 'tagmaps')

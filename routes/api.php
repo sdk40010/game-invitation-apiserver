@@ -68,8 +68,11 @@ Route::middleware(['camelToSnake', 'snakeToCamel'])->prefix('v1')->group(functio
         Route::prefix('users')->group(function () {
             // ユーザー
             Route::prefix('{id}')->group(function () {
-                Route::get('/', 'UserController@showInvitations');
+                Route::get('/', 'UserController@show');
+                Route::get('/invitations', 'UserController@showInvitations');
                 Route::get('/participations', 'UserController@showParticipations');
+                Route::get('/followings', 'UserController@showFollowings');
+                Route::get('/followers', 'UserController@showFollowers');
             });
 
             Route::prefix('{user}')->group(function () {

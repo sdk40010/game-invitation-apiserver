@@ -44,7 +44,6 @@ class InvitationController extends Controller
                 $query->orderBy('participations.created_at', 'asc');
             }])
             ->load(['user' => $invitation->userWithProfile()]);
-        
 
         return new InvitationResource($invitation);
     }

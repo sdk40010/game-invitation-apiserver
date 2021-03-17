@@ -12,6 +12,8 @@ class TagController extends Controller
      */
     public function index(Request $request)
     {
-        return response()->json(Tag::orderBy('count', 'desc')->get());
+        return response()->json(
+            Tag::orderBy('count', 'desc')->get() // 使用回数が多い順
+        ); 
     }
 }

@@ -69,7 +69,8 @@ class Invitation extends UUIDModel
     public function userWithProfile()
     {
         return function ($query) {
-            $this->user()->getRelated()->withProfile($this->user_id, $query);
+            // $this->user()->getRelated()->withProfile($this->user_id, $query);
+            $this->user()->getRelated()->withProfile($query);
         };
     }
 
@@ -80,8 +81,8 @@ class Invitation extends UUIDModel
     {
         return $this->belongsToMany(User::class, 'participations')
             ->as('participation')
-            ->withTimestamps()
-            ->using('App\Models\Participation');
+            ->using('App\Models\Participation')
+            ->withTimestamps();
     }
 
     /**
