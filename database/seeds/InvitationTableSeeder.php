@@ -12,7 +12,6 @@ class InvitationTableSeeder extends Seeder
      */
     public function run()
     {
-        factory(Invitation::class, 10)->create();
-        // factory(Invitation::class, 1)->create();
+        factory(Invitation::class, 40)->create();
     }
 }

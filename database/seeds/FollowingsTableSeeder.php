@@ -3,6 +3,8 @@
 use Illuminate\Database\Seeder;
 use App\Models\User;
 
+use Illuminate\Support\Facades\Log;
+
 class FollowingsTableSeeder extends Seeder
 {
     /**
@@ -12,17 +14,33 @@ class FollowingsTableSeeder extends Seeder
      */
     public function run()
     {
-        $self = User::where('name', 'sdk 40010')->first();
-        [$half1, $half2] = User::where('id', '!=', $self->id)->take(4)->get()->split(2);
+        // $self = User::where('name', 'sdk 40010')->first();
+        // [$half1, $half2] = User::where('id', '!=', $self->id)->take(10)->get()->split(2);
 
+        // // フォロー
+        // $half1->each(function ($user) use ($self) {
+        //     $self->followings()->attach($user);
+        // });
+
+        // // フォロワー
+        // $half2->each(function ($user) use ($self) {
+        //     $user->followings()->attach($self);
+        // });
+
+        $users = User::all();
+        
         // フォロー
-        $half1->each(function ($user) use ($self) {
-            $self->followings()->attach($user);
-        });
+        $users->each(function ($user) {
+            $others = User::where('id', '!=', $user->id)->get()->shuffle();
+            $n = rand(0, $others->count());
 
-        // フォロワー
-        $half2->each(function ($user) use ($self) {
-            $user->followings()->attach($self);
+            Log::debug('followings');
+            for ($i = 0; $i < $n; $i++ ) {
+                $user->followings()->attach($others[$i]);
+                Log::debug($user->id.' -> '.$others[$i]->id);
+            }
+
+            
         });
     }
 }

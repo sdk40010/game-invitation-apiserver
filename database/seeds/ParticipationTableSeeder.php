@@ -34,7 +34,6 @@ class ParticipationTableSeeder extends Seeder
             $n = $invitation->capacity > 2 
                 ? $invitation->capacity - 2
                 : 0;
-
             
             for ($i = 0; $i < $n; $i++) {
                 $user = $users->get($i);

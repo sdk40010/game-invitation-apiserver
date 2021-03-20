@@ -3,6 +3,7 @@
 namespace App\Http\Requests\Invitation;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Support\Facades\Log;
 
 class UpdateRequest extends FormRequest
 {
@@ -18,6 +19,15 @@ class UpdateRequest extends FormRequest
     }
 
     /**
+     * バリデーション前に行う処理
+     */
+    protected function prepareForValidation()
+    {
+        $this->tagsBeforeUpdate = $this->route('invitation')->tags->toArray();
+        $this->participantsCount = $this->route('invitation')->participants->count();
+    }
+
+    /**
      * Get the validation rules that apply to the request.
      *
      * @return array
@@ -29,9 +39,8 @@ class UpdateRequest extends FormRequest
             'description' => '',
             'start_time' => 'required|before:end_time',
             'end_time' => 'required|after:start_time',
-            'capacity' => 'required|min:1|max:10', // capacityの最小値は参加者の数で決まる
+            'capacity' => 'required|integer|min:'.$this->participantsCount.'|max:10',
             'tags' => 'array|max:10',
-            'tags_before_update' => 'array|max:10'
         ];
     }
 
@@ -46,14 +55,15 @@ class UpdateRequest extends FormRequest
         $existing = [];
         $new = [];
 
-        $shouldUpdateTags = array_filter(
+
+        $tagsShouldUpdated = array_filter(
             $this->validated()['tags'], 
             function ($value) {
-                return !in_array($value, $this->validated()['tags_before_update']);
+                return !in_array($value, $this->tagsBeforeUpdate);
             }
         );
         
-        foreach ($shouldUpdateTags as $tag) {
+        foreach ($tagsShouldUpdated as $tag) {
             if (array_key_exists('id', $tag)) {
                 $tag['count'] += 1;
                 $existing[] = $tag;
@@ -76,7 +86,7 @@ class UpdateRequest extends FormRequest
     public function getTagsDataShouldDetached()
     {
         return array_filter(
-            $this->validated()['tags_before_update'],
+            $this->tagsBeforeUpdate,
             function ($value) {
                 return !in_array($value, $this->validated()['tags']);
             }
