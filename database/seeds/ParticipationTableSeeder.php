@@ -17,28 +17,16 @@ class ParticipationTableSeeder extends Seeder
     {
         $invitations = Invitation::all();
         $users = User::all()->shuffle();
-
-        // １つの募集につき最大で10人の参加者を作成する
-        // $invitations->each(function ($invitation) use($users) {
-        //     $n = rand(0, 10);
-        //     $random = $users->random($n);
-        //     for ($i = 0; $i < $n; $i++) {
-        //         $invitation->participants()->attach($random[$i]);
-        //     }
-        // });
         
         $invitations->each(function ($invitation) use($users) {
-            // 募集の作成者を最初の参加者として保存する
+            // 募集の作成者を最初の参加者にする
             $invitation->participants()->attach($invitation->user_id);
 
-            $n = $invitation->capacity > 2 
-                ? $invitation->capacity - 2
-                : 0;
+            $n = rand(0, $invitation->capacity - 1);
             
             for ($i = 0; $i < $n; $i++) {
                 $user = $users->get($i);
-                if ($user->id === $invitation->user_id
-                ) {
+                if ($user->id === $invitation->user_id) {
                     continue;
                 }
                 $invitation->participants()->attach($user);
