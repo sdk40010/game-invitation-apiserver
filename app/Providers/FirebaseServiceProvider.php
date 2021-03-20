@@ -16,7 +16,8 @@ class FirebaseServiceProvider extends ServiceProvider implements DeferrableProvi
     public function register()
     {
         $this->app->singleton(\Kreait\Firebase\Auth::class, function () {
-            return (new Factory())->withServiceAccount(base_path('storage/firebase-adminsdk.json'))->createAuth();
+            $serviceAccount = base64_decode(config('firebaseadminsdk.service_account'));
+            return (new Factory())->withServiceAccount($serviceAccount)->createAuth();
         });
     }
 
