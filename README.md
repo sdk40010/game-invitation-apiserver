@@ -1,5 +1,5 @@
 ## GGFriend APIサーバー
-[GGFriend](https://github.com/sdk40010/game-invitation-frontend)用のAPIサーバーです。
+[GGFriend](https://github.com/sdk40010/game-invitation-frontend)(ゲーム仲間を募集できるサービス)用のAPIサーバーです。
 
 ## 環境
 - PHP 7.x
@@ -7,6 +7,7 @@
 - MySQL
 
 ## 機能
+- 認証API
 - 募集API
 - コメントAPI
 - 返信API
