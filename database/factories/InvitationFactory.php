@@ -10,6 +10,13 @@ use Illuminate\Support\Carbon;
 $factory->define(Invitation::class, function (Faker $faker) {
     $count = User::count();
 
+    $titles = collect(TagTableSeeder::$gameNames)
+        ->map(function ($gameName) { return $gameName.'　募集'; });
+
+    $title = config('app.env') === 'production'
+        ? $faker->randomElement($titles)
+        : $faker->word;
+
     $startTime = $faker->dateTimeBetween(
         Carbon::now()->addMonth(2),
         Carbon::now()->addMonth(4)
@@ -22,7 +29,7 @@ $factory->define(Invitation::class, function (Faker $faker) {
     return [
         'id' => $faker->uuid,
         'user_id' => $faker->randomElement(range(1, $count)),
-        'title' => $faker->word,
+        'title' => $title,
         'description' => $faker->text,
         'start_time' => $startTime,
         'end_time' => $endTime,

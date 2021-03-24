@@ -3,8 +3,6 @@
 use Illuminate\Database\Seeder;
 use App\Models\User;
 
-use Illuminate\Support\Facades\Log;
-
 class FollowingsTableSeeder extends Seeder
 {
     /**
@@ -34,13 +32,9 @@ class FollowingsTableSeeder extends Seeder
             $others = User::where('id', '!=', $user->id)->get()->shuffle();
             $n = rand(0, $others->count());
 
-            Log::debug('followings');
             for ($i = 0; $i < $n; $i++ ) {
                 $user->followings()->attach($others[$i]);
-                Log::debug($user->id.' -> '.$others[$i]->id);
             }
-
-            
         });
     }
 }
