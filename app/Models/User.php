@@ -22,13 +22,23 @@ class User extends Authenticatable
      * @var array
      */
     protected $fillable = [
-        'firebase_uid', 'name', 'email', 'icon_url'
+        'firebase_uid',
+        'name',
+        'email',
+        'icon_url'
     ];
 
     /**
      * 隠蔽する属性
      */
     protected $hidden = ['pivot'];
+
+    /**
+     * キャストする属性
+     */
+    protected $casts = [
+        'id' => 'int'
+    ];
 
     /**
      * ユーザーが投稿した募集一覧

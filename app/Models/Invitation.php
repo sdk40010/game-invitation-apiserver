@@ -55,6 +55,11 @@ class Invitation extends UUIDModel
         'capacity',
         'img_url'
     ];
+
+    protected $casts = [
+        'user_id' => 'int',
+        'capacity' => 'int'
+    ];
     
     /**
      * 募集の作成者

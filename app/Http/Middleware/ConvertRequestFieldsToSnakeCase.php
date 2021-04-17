@@ -16,7 +16,7 @@ class ConvertRequestFieldsToSnakeCase
      */
     public function handle($request, Closure $next)
     {
-        $result = $this->arrayToSnake($request->all());
+        $result = $this->toSnakeCase($request->all());
         $request->replace($result);
         return $next($request);
     }
@@ -25,12 +25,12 @@ class ConvertRequestFieldsToSnakeCase
      * 配列のキー名をスネークケースに変換する
      * 多次元配列にも対応可能
      */
-    private function arrayToSnake($array) {
+    public static function toSnakeCase($array) {
         $converted = [];
 
         foreach ($array as $key => $value) {
             if (is_array($value)) {
-                $converted[Str::snake($key)] = $this->arrayToSnake($value);
+                $converted[Str::snake($key)] = static::toSnakeCase($value);
             } else {
                 $converted[Str::snake($key)] = $value;
             }
