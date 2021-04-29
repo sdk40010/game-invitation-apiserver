@@ -3,15 +3,18 @@
 namespace Tests;
 
 use Illuminate\Foundation\Testing\TestCase as BaseTestCase;
-use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+
+use App\Models\User;
+
+use Illuminate\Support\Facades\Log;
 
 abstract class TestCase extends BaseTestCase
 {
     use CreatesApplication;
     use RefreshDatabase;
 
-    protected $urlPrefix = '/api/v1/';
+    protected static $urlPrefix = '/api/v1/';
 
     protected function setUp(): void
     {
@@ -27,5 +30,10 @@ abstract class TestCase extends BaseTestCase
             "Content-Type" => "application/json",
             "X-Requested-With" => "XMLHttpRequest",
         ]);
+    }
+
+    protected function debug($message)
+    {
+        Log::channel('stderr')->debug($message);
     }
 }

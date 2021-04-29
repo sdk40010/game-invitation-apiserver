@@ -2,9 +2,8 @@
 
 namespace Tests\Feature;
 
-use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
-use Tests\TestCase;
+use Tests\InvitationTestCase;
 
 use App\Models\Invitation;
 use App\Models\User;
@@ -13,7 +12,7 @@ use App\Http\Middleware\ConvertResponseFieldsToCamelCase as CamelCaseConverter;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Log;
 
-class InvitationTest extends TestCase
+class InvitationTest extends InvitationTestCase
 {
     /**
      * 募集取得機能をテストする
@@ -21,7 +20,7 @@ class InvitationTest extends TestCase
     public function testGet()
     {
         $invitation = Invitation::first();
-        $response = $this->getJson($this->urlPrefix.'invitations/'.$invitation->id);
+        $response = $this->getJson(static::$urlPrefix.'invitations/'.$invitation->id);
 
         $response
             ->assertOk()
@@ -33,7 +32,7 @@ class InvitationTest extends TestCase
      */
     public function testGetMany()
     {
-        $response = $this->getJson($this->urlPrefix.'invitations');
+        $response = $this->getJson(static::$urlPrefix.'invitations');
 
         // 募集一覧に含まれる募集の開始時刻が現在時刻よりもあとの時刻であることをテストする
         foreach ($response->json('invitations') as $invitation) {
@@ -50,7 +49,7 @@ class InvitationTest extends TestCase
     {
         $invitation = $this->makeInvitation();
 
-        $response = $this->postJson($this->urlPrefix.'invitations', $invitation);
+        $response = $this->postJson(static::$urlPrefix.'invitations', $invitation);
 
         $invitation['id'] = preg_split('/\/invitations\//' ,$response->json('redirectTo'))[1];
         unset($invitation['tags']);
@@ -68,7 +67,7 @@ class InvitationTest extends TestCase
 
         $this->actingAs(User::find($invitation->user_id)); // 募集の投稿者を認証済みユーザーとして指定する
 
-        $response = $this->putJson($this->urlPrefix.'invitations/'.$invitation->id, $updated);
+        $response = $this->putJson(static::$urlPrefix.'invitations/'.$invitation->id, $updated);
 
         $updated['id'] = $invitation->id;
         unset($updated['tags']);
@@ -86,7 +85,7 @@ class InvitationTest extends TestCase
 
         $this->actingAs(User::where('id', '!=', $invitation->user_id)->first());
 
-        $response = $this->putJson($this->urlPrefix.'invitations/'.$invitation->id, $updated);
+        $response = $this->putJson(static::$urlPrefix.'invitations/'.$invitation->id, $updated);
 
         $response->assertStatus(403);
     }
@@ -100,7 +99,7 @@ class InvitationTest extends TestCase
 
         $this->actingAs(User::find($invitation->user_id));
 
-        $response = $this->deleteJson($this->urlPrefix.'invitations/'.$invitation->id);
+        $response = $this->deleteJson(static::$urlPrefix.'invitations/'.$invitation->id);
 
         $response->assertOk();
         $this->assertDatabaseMissing('invitations', $invitation->toArray());
@@ -115,39 +114,8 @@ class InvitationTest extends TestCase
 
         $this->actingAs(User::where('id', '!=', $invitation->user_id)->first());
 
-        $response = $this->deleteJson($this->urlPrefix.'invitations/'.$invitation->id);
+        $response = $this->deleteJson(static::$urlPrefix.'invitations/'.$invitation->id);
 
         $response->assertStatus(403);
-    }
-
-    /**
-     * テスト用の募集を作成する
-     * 
-     * @return array
-     */
-    private function makeInvitation()
-    {
-        $invitation = factory(Invitation::class)->make()->toArray();
-
-        foreach(['id', 'user_id', 'start_in', 'interval'] as $key) {
-            unset($invitation[$key]);
-        }
-        $invitation['start_time'] = Carbon::parse($invitation['start_time'])->format('Y-m-d H:i:s');
-        $invitation['end_time'] = Carbon::parse($invitation['end_time'])->format('Y-m-d H:i:s');
-        $invitation['tags'] = [];
-
-        return $invitation;
-    }
-
-    /**
-     * @return array
-     */
-    private function prepareForTestUpdate()
-    {
-        $invitation = Invitation::first();
-        $updated = $this->makeInvitation();
-        $updated['capacity'] = $invitation->capacity; // 参加者の人数を下回るとエラーになるので定員はそのままにしておく
-
-        return [$invitation, $updated];
     }
 }
