@@ -6,6 +6,7 @@ use Illuminate\Foundation\Testing\TestCase as BaseTestCase;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
 use App\Models\User;
+use App\Models\Invitation;
 
 use Illuminate\Support\Facades\Log;
 
@@ -30,6 +31,16 @@ abstract class TestCase extends BaseTestCase
             "Content-Type" => "application/json",
             "X-Requested-With" => "XMLHttpRequest",
         ]);
+    }
+
+    /**
+     * 無作為に募集を１件取得する
+     * 
+     * @return Eloquent
+     * 
+     */
+    protected function getRandomInvitation() {
+        return Invitation::all()->random();
     }
 
     protected function debug($message)

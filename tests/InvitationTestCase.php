@@ -32,7 +32,7 @@ abstract class InvitationTestCase extends TestCase
      */
     protected function prepareForTestUpdate()
     {
-        $invitation = Invitation::first();
+        $invitation = $this->getRandomInvitation();
         $updated = $this->makeInvitation($invitation->tags->toArray());
         $updated['capacity'] = $invitation->capacity; // 参加者の人数を下回るとエラーになるので定員はそのままにしておく
 

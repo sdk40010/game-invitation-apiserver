@@ -2,7 +2,6 @@
 
 namespace Tests\Feature;
 
-use Illuminate\Foundation\Testing\WithFaker;
 use Tests\InvitationTestCase;
 
 use App\Models\Invitation;
@@ -10,7 +9,6 @@ use App\Models\User;
 
 use App\Http\Middleware\ConvertResponseFieldsToCamelCase as CamelCaseConverter;
 use Illuminate\Support\Carbon;
-use Illuminate\Support\Facades\Log;
 
 class InvitationTest extends InvitationTestCase
 {
@@ -19,7 +17,7 @@ class InvitationTest extends InvitationTestCase
      */
     public function testGet()
     {
-        $invitation = Invitation::first();
+        $invitation = $this->getRandomInvitation();
         $response = $this->getJson(static::$urlPrefix.'invitations/'.$invitation->id);
 
         $response
@@ -33,12 +31,21 @@ class InvitationTest extends InvitationTestCase
     public function testGetMany()
     {
         $response = $this->getJson(static::$urlPrefix.'invitations');
+        $invitations = $response->json('invitations');
 
-        // 募集一覧に含まれる募集の開始時刻が現在時刻よりもあとの時刻であることをテストする
-        foreach ($response->json('invitations') as $invitation) {
-            $this->assertTrue(
-                Carbon::parse($invitation['startTime'])->greaterThan(Carbon::now())
-            );
+        foreach ($invitations as $i => $invitation) {
+            $startTime = Carbon::parse($invitation['startTime']);
+
+            // 開始時刻が現在時刻よりも後の時刻であることをテストする
+            $this->assertTrue($startTime->greaterThanOrEqualTo(Carbon::now()));
+            
+            // 開始時刻の昇順で並んでいることをテストする
+            if ($i < count($invitation) - 1) {
+                $startTime->lessThanOrEqualTo(
+                    Carbon::parse($invitations[$i + 1]['startTime'])
+                );
+            }
+
         }
     }
 
@@ -95,7 +102,7 @@ class InvitationTest extends InvitationTestCase
      */
     public function testDelete()
     {
-        $invitation = Invitation::first();
+        $invitation = $this->getRandomInvitation();
 
         $this->actingAs(User::find($invitation->user_id));
 
@@ -110,7 +117,7 @@ class InvitationTest extends InvitationTestCase
      */
     public function testOthersCantDelete()
     {
-        $invitation = Invitation::first();
+        $invitation = $this->getRandomInvitation();
 
         $this->actingAs(User::where('id', '!=', $invitation->user_id)->first());
 

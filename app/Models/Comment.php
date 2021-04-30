@@ -23,6 +23,13 @@ class Comment extends Model
     protected $withCount = ['replies'];
 
     /**
+     * キャストする属性
+     */
+    protected $casts = [
+        'user_id' => 'int',
+    ];
+
+    /**
      * コメント先の募集
      */
     public function invitation()
