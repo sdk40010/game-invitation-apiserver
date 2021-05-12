@@ -17,6 +17,13 @@ class Reply extends Model
     protected $with = ['user', 'comment.user', 'to'];
 
     /**
+     * キャストする属性
+     */
+    protected $casts = [
+        'user_id' => 'int',
+    ];
+
+    /**
      * 返信先のコメント
      */
     public function comment() {

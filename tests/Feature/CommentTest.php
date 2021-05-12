@@ -69,6 +69,8 @@ class CommentTest extends TestCase
 
     /**
      * 投稿者以外はコメントを更新できないことをテストする
+     * 
+     * @return void
      */
     public function theOthersCantUpdate()
     {
@@ -89,6 +91,8 @@ class CommentTest extends TestCase
 
     /**
      * コメント削除機能をテストする
+     * 
+     * @return void
      */
     public function testDelete()
     {
@@ -105,11 +109,16 @@ class CommentTest extends TestCase
 
     /**
      * 投稿者以外はコメントを削除できないことをテストする
+     * 
+     * @return void
      */
     function testOthersCantDelete()
     {
         $invitation = $this->getRandomInvitation();
         $comment = $invitation->comments->random();
+
+        // $this->debug($comment->user_id);
+        // $this->debug(User::where('id', '!=', $comment->user_id)->count());
 
         $this->actingAs(User::where('id', '!=', $comment->user_id)->first());
 

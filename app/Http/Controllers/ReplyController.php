@@ -35,8 +35,7 @@ class ReplyController extends Controller
                 ->associate(Auth::user())
         );
 
-        $replies = $comment->replies()->oldest()->get();
-        return response()->json($replies);
+        return response()->json($reply);
     }
 
     /**
