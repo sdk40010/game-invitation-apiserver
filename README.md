@@ -1,4 +1,6 @@
-## GGFriend APIサーバー
+# GGFriend APIサーバー
+[![tests](https://circleci.com/gh/sdk40010/game-invitation-apiserver.svg?style=shield)](https://app.circleci.com/pipelines/github/sdk40010/game-invitation-apiserver)
+
 [GGFriend](https://github.com/sdk40010/game-invitation-frontend)(ゲーム仲間を募集できるサービス)用のAPIサーバーです。
 
 ## 環境
