@@ -13,3 +13,4 @@ yarn-error.log
 .DS_Store
 route.txt
 /storage/firebase-adminsdk.json
+phpunit.xml.bak
