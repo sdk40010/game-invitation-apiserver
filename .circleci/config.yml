@@ -15,10 +15,9 @@ jobs:
         - composer-v1-{{ checksum "composer.lock" }}
         - composer-v1-
     - run: composer install -n --prefer-dist
-    - run: composer install -n --prefer-dist
-      - save_cache:
-        key: composer-v1-{{ checksum "composer.lock" }}
-        paths:
-          - vendor
+    - save_cache:
+      key: composer-v1-{{ checksum "composer.lock" }}
+      paths:
+        - vendor
     - run: vendor/bin/phpunit
 
