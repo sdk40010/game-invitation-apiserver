@@ -18,4 +18,4 @@
 - ユーザーAPI
 - フォローAPI
 
-これらのAPIを利用したGGFriendの機能の詳細は[こちら](https://github.com/sdk40010/game-invitation-frontend#%E6%A9%9F%E8%83%BD)で確認できます。
+これらのAPIを利用したフロントエンドの機能は[こちら](https://github.com/sdk40010/game-invitation-frontend#%E6%A9%9F%E8%83%BD)で確認できます。
