@@ -6,7 +6,7 @@
 ## 環境
 - PHP 7.x
 - Laravel 6.x
-- MySQL
+- MySQL 5.7.x
 
 ## 機能
 - 認証API
