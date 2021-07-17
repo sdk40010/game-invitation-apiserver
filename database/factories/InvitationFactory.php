@@ -18,8 +18,8 @@ $factory->define(Invitation::class, function (Faker $faker) {
         : $faker->word;
 
     $startTime = $faker->dateTimeBetween(
-        Carbon::now()->addMonth(2),
-        Carbon::now()->addMonth(4)
+        Carbon::now()->addMonth(12),
+        Carbon::now()->addMonth(14)
     );
     $endTime = $faker->dateTimeBetween(
         $startTime,
